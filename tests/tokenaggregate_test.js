@@ -3,6 +3,7 @@ var TokenAggregate = require("../scripts/TokenAggregate.js").TokenAggregate;
 
 chai = require("chai");
 var assert = chai.assert;
+var checkTokens = require('../tests/helper_functions').checkTokens;
 
 describe("A TokenAggregate object", function() {
     var tokens;
@@ -56,8 +57,8 @@ describe("A TokenAggregate object", function() {
                     ta.split(test.token, test.index);
                 });
 
-                it("split("+test.token+","+test.index+") should split token "+test.token+" into two at index "+test.index, function () {
-                    assert.deepEqual(ta[tokens], test.after);
+                describe("tokens property after calling split("+test.token+","+test.index+")", function () {
+                    checkTokens(ta,test.after);
                 });
             });
         });
@@ -102,8 +103,8 @@ describe("A TokenAggregate object", function() {
                     ta.merge(test.token);
                 });
 
-                it("merge("+test.token+") should merge tokens "+test.token+" and "+(test.token+1)+" together", function () {
-                    assert.deepEqual(ta[tokens], test.after);
+                describe("tokens property after calling merge("+test.token+")", function () {
+                    checkTokens(ta,test.after);
                 });
             });
         });

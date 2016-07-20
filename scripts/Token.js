@@ -1,4 +1,11 @@
-
+/**
+ * A Token represents a single token represented in a Conllu file
+ * For example, a Token may represent the following line:
+ *
+ * 1	I	I	PRON	PRP	Case=Nom|Number=Sing|Person=1	2	nsubj	_	_
+ *
+ * @constructor
+ */
 var Token = function() {};
 
 Token.prototype = {

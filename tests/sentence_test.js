@@ -3,6 +3,7 @@ var Sentence = require("../scripts/Sentence.js").Sentence;
 
 chai = require("chai");
 var assert = chai.assert;
+var checkTokens = require("../tests/helper_functions.js").checkTokens;
 
 describe("A Sentence object created by an empty construcor", function() {
     var sentence;
@@ -77,8 +78,8 @@ describe("A Sentence object created by an empty construcor", function() {
                     sentence.expand(test.token,test.index);
                 });
 
-                it("expand("+test.token+","+test.index+") should expand token "+test.token+" into two subtokens at index "+test.index, function () {
-                    assert.deepEqual(sentence.tokens, test.after);
+                describe("tokens property after calling expand("+test.token+","+test.index+")", function () {
+                    checkTokens(sentence,test.after);
                 });
             });
         });
@@ -115,8 +116,8 @@ describe("A Sentence object created by an empty construcor", function() {
                     sentence.collapse(test.token);
                 });
 
-                it("collapse("+test.token+") should collapse multitoken "+test.token, function () {
-                    assert.deepEqual(sentence.tokens, test.after);
+                describe("tokens property after calling collapse("+test.token+")", function () {
+                    checkTokens(sentence,test.after);
                 });
             });
         });
