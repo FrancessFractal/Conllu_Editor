@@ -1,5 +1,7 @@
 
 var TokenAggregate = require("../scripts/TokenAggregate.js").TokenAggregate;
+var Token = require("../scripts/Token.js").Token;
+var MultiwordToken = require("../scripts/MultiwordToken.js").MultiwordToken;
 
 chai = require("chai");
 var assert = chai.assert;
@@ -52,7 +54,17 @@ describe("A TokenAggregate object", function() {
         tests.forEach(function (test) {
             context("Sentence: "+test.sentence, function () {
                 beforeEach(function () {
-                    ta.tokens = test.before;
+                    test.before.forEach(function (obj, index) {
+                        if(obj.hasOwnProperty('tokens')) {
+                            ta.tokens[index] = new MultiwordToken();
+                            ta.tokens[index].id = obj.id;
+                            ta.tokens[index].form = obj.form;
+                        } else {
+                            ta.tokens[index] = new Token();
+                            ta.tokens[index].id = obj.id;
+                            ta.tokens[index].form = obj.form;
+                        }
+                    });
                     ta.split(test.token, test.index);
                 });
 
@@ -72,13 +84,13 @@ describe("A TokenAggregate object", function() {
                             });
 
                             it("should be an instance of Token", function () {
-                                assert.instanceOf(ta.tokens[index],'Token');
+                                assert.instanceOf(ta.tokens[index],Token);
                             });
 
                             if(gold.hasOwnProperty('tokens')) {
 
                                 it("should be an instance of MultiwordToken", function () {
-                                    assert.instanceOf(ta.tokens[index],'MultiwordToken');
+                                    assert.instanceOf(ta.tokens[index],MultiwordToken);
                                 });
 
                                 it("should have "+gold.tokens.length+" subtokens", function () {
@@ -89,7 +101,7 @@ describe("A TokenAggregate object", function() {
                                 for (var mindex in gold.tokens) {
                                     describe("Subtoken in position "+mindex, function () {
                                         it("should be an instance of Token", function () {
-                                            assert.instanceOf(ta.tokens[index].tokens[mindex],'Token');
+                                            assert.instanceOf(ta.tokens[index].tokens[mindex],Token);
                                         });
 
                                         it("should have id "+gold.tokens[mindex].id, function () {
@@ -104,7 +116,7 @@ describe("A TokenAggregate object", function() {
 
                             } else {
                                 it("should not be an instance of MultiwordToken", function () {
-                                    assert.notInstanceOf(ta.tokens[index],'MultiwordToken');
+                                    assert.notInstanceOf(ta.tokens[index],MultiwordToken);
                                 });
 
                                 // We do not check the id of MultiwordTokens because it is a computed field,
@@ -155,7 +167,17 @@ describe("A TokenAggregate object", function() {
         tests.forEach(function (test) {
             context("Sentence: "+test.sentence, function () {
                 beforeEach(function () {
-                    ta.tokens = test.before;
+                    test.before.forEach(function (obj, index) {
+                        if(obj.hasOwnProperty('tokens')) {
+                            ta.tokens[index] = new MultiwordToken();
+                            ta.tokens[index].id = obj.id;
+                            ta.tokens[index].form = obj.form;
+                        } else {
+                            ta.tokens[index] = new Token();
+                            ta.tokens[index].id = obj.id;
+                            ta.tokens[index].form = obj.form;
+                        }
+                    });
                     ta.merge(test.token);
                 });
 
@@ -175,13 +197,13 @@ describe("A TokenAggregate object", function() {
                             });
 
                             it("should be an instance of Token", function () {
-                                assert.instanceOf(ta.tokens[index],'Token');
+                                assert.instanceOf(ta.tokens[index],Token);
                             });
 
                             if(gold.hasOwnProperty('tokens')) {
 
                                 it("should be an instance of MultiwordToken", function () {
-                                    assert.instanceOf(ta.tokens[index],'MultiwordToken');
+                                    assert.instanceOf(ta.tokens[index],MultiwordToken);
                                 });
 
                                 it("should have "+gold.tokens.length+" subtokens", function () {
@@ -192,7 +214,7 @@ describe("A TokenAggregate object", function() {
                                 for (var mindex in gold.tokens) {
                                     describe("Subtoken in position "+mindex, function () {
                                         it("should be an instance of Token", function () {
-                                            assert.instanceOf(ta.tokens[index].tokens[mindex],'Token');
+                                            assert.instanceOf(ta.tokens[index].tokens[mindex],Token);
                                         });
 
                                         it("should have id "+gold.tokens[mindex].id, function () {
@@ -207,7 +229,7 @@ describe("A TokenAggregate object", function() {
 
                             } else {
                                 it("should not be an instance of MultiwordToken", function () {
-                                    assert.notInstanceOf(ta.tokens[index],'MultiwordToken');
+                                    assert.notInstanceOf(ta.tokens[index],MultiwordToken);
                                 });
 
                                 // We do not check the id of MultiwordTokens because it is a computed field,
