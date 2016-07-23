@@ -5,7 +5,6 @@ var MultiwordToken = require("../scripts/MultiwordToken.js").MultiwordToken;
 
 chai = require("chai");
 var assert = chai.assert;
-var conllu_gold = require("../tests/example1/conllu_obj.js").conllu;
 
 describe("A Sentence object created by an empty construcor", function() {
     var sentence;
