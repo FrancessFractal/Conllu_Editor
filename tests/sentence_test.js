@@ -3,7 +3,6 @@ var Sentence = require("../scripts/Sentence.js").Sentence;
 
 chai = require("chai");
 var assert = chai.assert;
-var checkTokens = require("../tests/helper_functions.js").checkTokens;
 
 describe("A Sentence object created by an empty construcor", function() {
     var sentence;
@@ -79,7 +78,64 @@ describe("A Sentence object created by an empty construcor", function() {
                 });
 
                 describe("tokens property after calling expand("+test.token+","+test.index+")", function () {
-                    checkTokens(sentence,test.after);
+
+
+                    it("should be length "+test.after.length, function () {
+                        assert.lengthOf(sentence.tokens,test.after);
+                    });
+
+
+                    test.after.forEach(function (gold,index) {
+                        describe("Token in position "+index, function () {
+
+                            it("should have form "+gold.form, function () {
+                                assert.strictEqual(sentence.tokens[index].form,gold.form);
+                            });
+
+                            it("should be an instance of Token", function () {
+                                assert.instanceOf(sentence.tokens[index],'Token');
+                            });
+
+                            if(gold.hasOwnProperty('tokens')) {
+
+                                it("should be an instance of MultiwordToken", function () {
+                                    assert.instanceOf(sentence.tokens[index],'MultiwordToken');
+                                });
+
+                                it("should have "+gold.tokens.length+" subtokens", function () {
+                                    assert.lengthOf(sentence.tokens[index].tokens.length,gold.tokens.length);
+                                });
+
+
+                                for (var mindex in gold.tokens) {
+                                    describe("Subtoken in position "+mindex, function () {
+                                        it("should be an instance of Token", function () {
+                                            assert.instanceOf(sentence.tokens[index].tokens[mindex],'Token');
+                                        });
+
+                                        it("should have id "+gold.tokens[mindex].id, function () {
+                                            assert.strictEqual(sentence.tokens[index].tokens[mindex].id,gold.tokens[mindex].id)
+                                        });
+
+                                        it("should have form "+gold.tokens[mindex].form, function () {
+                                            assert.strictEqual(sentence.tokens[index].tokens[mindex].form,gold.tokens[mindex].form);
+                                        });
+                                    });
+                                };
+
+                            } else {
+                                it("should not be an instance of MultiwordToken", function () {
+                                    assert.notInstanceOf(sentence.tokens[index],'MultiwordToken');
+                                });
+
+                                // We do not check the id of MultiwordTokens because it is a computed field,
+                                // and this is just meant to test that all id and form values are set properly.
+                                it("should have id "+gold.id, function () {
+                                    assert.strictEqual(sentence.tokens[index].id,gold.id)
+                                });
+                            }
+                        });
+                    });
                 });
             });
         });
@@ -117,7 +173,64 @@ describe("A Sentence object created by an empty construcor", function() {
                 });
 
                 describe("tokens property after calling collapse("+test.token+")", function () {
-                    checkTokens(sentence,test.after);
+
+
+                    it("should be length "+test.after.length, function () {
+                        assert.lengthOf(sentence.tokens,test.after);
+                    });
+
+
+                    test.after.forEach(function (gold,index) {
+                        describe("Token in position "+index, function () {
+
+                            it("should have form "+gold.form, function () {
+                                assert.strictEqual(sentence.tokens[index].form,gold.form);
+                            });
+
+                            it("should be an instance of Token", function () {
+                                assert.instanceOf(sentence.tokens[index],'Token');
+                            });
+
+                            if(gold.hasOwnProperty('tokens')) {
+
+                                it("should be an instance of MultiwordToken", function () {
+                                    assert.instanceOf(sentence.tokens[index],'MultiwordToken');
+                                });
+
+                                it("should have "+gold.tokens.length+" subtokens", function () {
+                                    assert.lengthOf(sentence.tokens[index].tokens.length,gold.tokens.length);
+                                });
+
+
+                                for (var mindex in gold.tokens) {
+                                    describe("Subtoken in position "+mindex, function () {
+                                        it("should be an instance of Token", function () {
+                                            assert.instanceOf(sentence.tokens[index].tokens[mindex],'Token');
+                                        });
+
+                                        it("should have id "+gold.tokens[mindex].id, function () {
+                                            assert.strictEqual(sentence.tokens[index].tokens[mindex].id,gold.tokens[mindex].id)
+                                        });
+
+                                        it("should have form "+gold.tokens[mindex].form, function () {
+                                            assert.strictEqual(sentence.tokens[index].tokens[mindex].form,gold.tokens[mindex].form);
+                                        });
+                                    });
+                                };
+
+                            } else {
+                                it("should not be an instance of MultiwordToken", function () {
+                                    assert.notInstanceOf(sentence.tokens[index],'MultiwordToken');
+                                });
+
+                                // We do not check the id of MultiwordTokens because it is a computed field,
+                                // and this is just meant to test that all id and form values are set properly.
+                                it("should have id "+gold.id, function () {
+                                    assert.strictEqual(sentence.tokens[index].id,gold.id)
+                                });
+                            }
+                        });
+                    });
                 });
             });
         });

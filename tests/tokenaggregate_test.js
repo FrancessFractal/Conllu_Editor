@@ -3,7 +3,6 @@ var TokenAggregate = require("../scripts/TokenAggregate.js").TokenAggregate;
 
 chai = require("chai");
 var assert = chai.assert;
-var checkTokens = require('../tests/helper_functions').checkTokens;
 
 describe("A TokenAggregate object", function() {
     var tokens;
@@ -53,12 +52,69 @@ describe("A TokenAggregate object", function() {
         tests.forEach(function (test) {
             context("Sentence: "+test.sentence, function () {
                 beforeEach(function () {
-                    ta[tokens] = test.before;
+                    ta.tokens = test.before;
                     ta.split(test.token, test.index);
                 });
 
                 describe("tokens property after calling split("+test.token+","+test.index+")", function () {
-                    checkTokens(ta,test.after);
+
+
+                    it("should be length "+test.after.length, function () {
+                        assert.lengthOf(ta.tokens,test.after);
+                    });
+
+
+                    test.after.forEach(function (gold,index) {
+                        describe("Token in position "+index, function () {
+
+                            it("should have form "+gold.form, function () {
+                                assert.strictEqual(ta.tokens[index].form,gold.form);
+                            });
+
+                            it("should be an instance of Token", function () {
+                                assert.instanceOf(ta.tokens[index],'Token');
+                            });
+
+                            if(gold.hasOwnProperty('tokens')) {
+
+                                it("should be an instance of MultiwordToken", function () {
+                                    assert.instanceOf(ta.tokens[index],'MultiwordToken');
+                                });
+
+                                it("should have "+gold.tokens.length+" subtokens", function () {
+                                    assert.lengthOf(ta.tokens[index].tokens.length,gold.tokens.length);
+                                });
+
+
+                                for (var mindex in gold.tokens) {
+                                    describe("Subtoken in position "+mindex, function () {
+                                        it("should be an instance of Token", function () {
+                                            assert.instanceOf(ta.tokens[index].tokens[mindex],'Token');
+                                        });
+
+                                        it("should have id "+gold.tokens[mindex].id, function () {
+                                            assert.strictEqual(ta.tokens[index].tokens[mindex].id,gold.tokens[mindex].id)
+                                        });
+
+                                        it("should have form "+gold.tokens[mindex].form, function () {
+                                            assert.strictEqual(ta.tokens[index].tokens[mindex].form,gold.tokens[mindex].form);
+                                        });
+                                    });
+                                };
+
+                            } else {
+                                it("should not be an instance of MultiwordToken", function () {
+                                    assert.notInstanceOf(ta.tokens[index],'MultiwordToken');
+                                });
+
+                                // We do not check the id of MultiwordTokens because it is a computed field,
+                                // and this is just meant to test that all id and form values are set properly.
+                                it("should have id "+gold.id, function () {
+                                    assert.strictEqual(ta.tokens[index].id,gold.id)
+                                });
+                            }
+                        });
+                    });
                 });
             });
         });
@@ -99,12 +155,69 @@ describe("A TokenAggregate object", function() {
         tests.forEach(function (test) {
             context("Sentence: "+test.sentence, function () {
                 beforeEach(function () {
-                    ta[tokens] = test.before;
+                    ta.tokens = test.before;
                     ta.merge(test.token);
                 });
 
                 describe("tokens property after calling merge("+test.token+")", function () {
-                    checkTokens(ta,test.after);
+
+
+                    it("should be length "+test.after.length, function () {
+                        assert.lengthOf(ta.tokens,test.after);
+                    });
+
+
+                    test.after.forEach(function (gold,index) {
+                        describe("Token in position "+index, function () {
+
+                            it("should have form "+gold.form, function () {
+                                assert.strictEqual(ta.tokens[index].form,gold.form);
+                            });
+
+                            it("should be an instance of Token", function () {
+                                assert.instanceOf(ta.tokens[index],'Token');
+                            });
+
+                            if(gold.hasOwnProperty('tokens')) {
+
+                                it("should be an instance of MultiwordToken", function () {
+                                    assert.instanceOf(ta.tokens[index],'MultiwordToken');
+                                });
+
+                                it("should have "+gold.tokens.length+" subtokens", function () {
+                                    assert.lengthOf(ta.tokens[index].tokens.length,gold.tokens.length);
+                                });
+
+
+                                for (var mindex in gold.tokens) {
+                                    describe("Subtoken in position "+mindex, function () {
+                                        it("should be an instance of Token", function () {
+                                            assert.instanceOf(ta.tokens[index].tokens[mindex],'Token');
+                                        });
+
+                                        it("should have id "+gold.tokens[mindex].id, function () {
+                                            assert.strictEqual(ta.tokens[index].tokens[mindex].id,gold.tokens[mindex].id)
+                                        });
+
+                                        it("should have form "+gold.tokens[mindex].form, function () {
+                                            assert.strictEqual(ta.tokens[index].tokens[mindex].form,gold.tokens[mindex].form);
+                                        });
+                                    });
+                                };
+
+                            } else {
+                                it("should not be an instance of MultiwordToken", function () {
+                                    assert.notInstanceOf(ta.tokens[index],'MultiwordToken');
+                                });
+
+                                // We do not check the id of MultiwordTokens because it is a computed field,
+                                // and this is just meant to test that all id and form values are set properly.
+                                it("should have id "+gold.id, function () {
+                                    assert.strictEqual(ta.tokens[index].id,gold.id)
+                                });
+                            }
+                        });
+                    });
                 });
             });
         });
