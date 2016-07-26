@@ -3,6 +3,7 @@ var Token = require("../scripts/Token.js").Token;
 
 chai = require("chai");
 var assert = chai.assert;
+var conllu_gold = require("../tests/example1/conllu_obj.js").conllu;
 
 describe("A Token object created by an empty constructor", function () {
     var token;
@@ -63,6 +64,42 @@ describe("A Token object created by an empty constructor", function () {
     it("should have MISC property undefined", function() {
         assert.property(token,'misc', "The Token does not have a property called 'misc'.");
         assert.isUndefined(token.misc, "The 'misc' property is not undefined.");
+    });
+
+
+    describe("property 'serial'", function () {
+        it("should be a property", function () {
+            assert.property(token, 'serial');
+        });
+
+        describe("get", function () {
+            it("Token generated from empty constructor", function () {
+                assert.strictEqual(token.serial,'_\t_\t_\t_\t_\t_\t_\t_\t_\t_')
+            });
+
+
+            conllu_gold.sentences.forEach(function (sent_gold) {
+                sent_gold.tokens.forEach(function (token_gold) {
+                    beforeEach(function () {
+                        token.id = token_gold.id;
+                        token.form = token_gold.form;
+                        token.lemma = token_gold.lemma;
+                        token.upostag = token_gold.upostag;
+                        token.xpostag = token_gold.xpostag;
+                        token.feats = token_gold.feats;
+                        token.head = token_gold.head;
+                        token.deprel = token_gold.deprel;
+                        token.deps = token_gold.deps;
+                        token.misc = token_gold.misc;
+                    });
+
+                    it("Token: " + token_gold.form, function () {
+                        assert.strictEqual(token.serial, token_gold.serial);
+                    });
+
+                });
+            });
+        });
     });
 
 });

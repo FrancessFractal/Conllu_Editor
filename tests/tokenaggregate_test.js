@@ -72,7 +72,7 @@ describe("A TokenAggregate object", function() {
 
 
                     it("should be length "+test.after.length, function () {
-                        assert.lengthOf(ta.tokens,test.after);
+                        assert.lengthOf(ta.tokens,test.after.length);
                     });
 
 
@@ -185,7 +185,7 @@ describe("A TokenAggregate object", function() {
 
 
                     it("should be length "+test.after.length, function () {
-                        assert.lengthOf(ta.tokens,test.after);
+                        assert.lengthOf(ta.tokens,test.after.length);
                     });
 
 

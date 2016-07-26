@@ -5,6 +5,7 @@ var MultiwordToken = require("../scripts/MultiwordToken.js").MultiwordToken;
 
 chai = require("chai");
 var assert = chai.assert;
+var conllu_gold = require("../tests/example1/conllu_obj.js").conllu;
 
 describe("A Sentence object created by an empty construcor", function() {
     var sentence;
@@ -93,7 +94,7 @@ describe("A Sentence object created by an empty construcor", function() {
 
 
                     it("should be length "+test.after.length, function () {
-                        assert.lengthOf(sentence.tokens,test.after);
+                        assert.lengthOf(sentence.tokens,test.after.length);
                     });
 
 
@@ -198,7 +199,7 @@ describe("A Sentence object created by an empty construcor", function() {
 
 
                     it("should be length "+test.after.length, function () {
-                        assert.lengthOf(sentence.tokens,test.after);
+                        assert.lengthOf(sentence.tokens,test.after.length);
                     });
 
 
@@ -255,6 +256,25 @@ describe("A Sentence object created by an empty construcor", function() {
                     });
                 });
             });
+        });
+    });
+
+    describe("property 'serial'", function () {
+        it("should be a property", function () {
+            assert.property(sentence, 'serial');
+        });
+
+        describe("get", function () {
+            for (var sent_index in conllu_gold.sentences) {
+                beforeEach(function () {
+                    // create dummy sentences whose serial properties match the conllu file
+                    sentence.tokens = conllu_gold.sentences[sent_index].tokens;
+                });
+
+                it("Sentence: " + conllu_gold.sentences[sent_index].text, function () {
+                    assert.strictEqual(sentence.serial, conllu_gold.sentences[sent_index].serial);
+                });
+            }
         });
     });
 

@@ -1,5 +1,6 @@
 
 var Conllu = require("../scripts/Conllu.js").Conllu;
+var conllu_gold = require("../tests/example1/conllu_obj.js").conllu;
 
 chai = require("chai");
 var assert = chai.assert;
@@ -32,6 +33,23 @@ describe("A Conllu object created with an empty constructor", function () {
 
         it("should be empty", function () {
             assert.lengthOf(conllu.sentences, 0);
+        });
+    });
+
+    describe("property 'serial'", function () {
+        it("should be a property", function () {
+            assert.property(conllu, 'serial');
+        });
+
+        describe("get", function () {
+            beforeEach(function () {
+                // create dummy sentences whose serial properties match the conllu file
+                conllu.sentences = conllu_gold.sentences;
+            });
+
+            it("should return the sentences' serial properties concatenated with new lines. ", function () {
+                assert.strictEqual(conllu.serial, conllu_gold.serial);
+            });
         });
     });
 

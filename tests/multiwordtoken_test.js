@@ -5,8 +5,9 @@ var Token = require("../scripts/Token.js").Token;
 
 chai = require("chai");
 var assert = chai.assert;
+var conllu_gold = require("../tests/example1/conllu_obj.js").conllu;
 
-describe("A multiword token created by an empty construcor", function() {
+describe("A MultiwordToken created by an empty construcor", function() {
     var mwt;
     beforeEach(function () {
         mwt = new MultiwordToken();
@@ -53,6 +54,41 @@ describe("A multiword token created by an empty construcor", function() {
                 })
             })
         });        
+    });
+
+    describe("property 'serial'", function () {
+        it("should be a property", function () {
+            assert.property(mwt, 'serial');
+        });
+
+        describe("get", function () {
+            conllu_gold.sentences.forEach(function (sent_gold) {
+                sent_gold.tokens.forEach(function (mwt_gold) {
+                    if(mwt_gold.hasOwnProperty('tokens')) {
+                        beforeEach(function () {
+                            mwt_gold.tokens.forEach(function (token_gold) {
+                                var token = new Token();
+                                token.id = token_gold.id;
+                                token.form = token_gold.form;
+                                token.lemma = token_gold.lemma;
+                                token.upostag = token_gold.upostag;
+                                token.xpostag = token_gold.xpostag;
+                                token.feats = token_gold.feats;
+                                token.head = token_gold.head;
+                                token.deprel = token_gold.deprel;
+                                token.deps = token_gold.deps;
+                                token.misc = token_gold.misc;
+                                mwt.tokens.push(token);
+                            });
+                        });
+
+                        it("Token " + mwt_gold.form, function () {
+                            assert.strictEqual(mwt.serial, mwt_gold.serial);
+                        });
+                    }
+                });
+            });
+        });
     });
 
 });
