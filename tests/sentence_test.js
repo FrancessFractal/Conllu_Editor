@@ -167,7 +167,7 @@ describe("A Sentence object created by an empty construcor", function() {
         var tests = [
             {
                 sentence: "I haven't a clue.",
-                token: 2,
+                token: '2-3',
                 before: [{id: 1, form: 'I'},
                     {
                         id: '2-3',
