@@ -94,7 +94,7 @@ describe("A TokenAggregate object", function() {
                                 });
 
                                 it("should have "+gold.tokens.length+" subtokens", function () {
-                                    assert.lengthOf(ta.tokens[index].tokens.length,gold.tokens.length);
+                                    assert.lengthOf(ta.tokens[index].tokens,gold.tokens.length);
                                 });
 
 
@@ -207,7 +207,7 @@ describe("A TokenAggregate object", function() {
                                 });
 
                                 it("should have "+gold.tokens.length+" subtokens", function () {
-                                    assert.lengthOf(ta.tokens[index].tokens.length,gold.tokens.length);
+                                    assert.lengthOf(ta.tokens[index].tokens,gold.tokens.length);
                                 });
 
 
