@@ -21,6 +21,16 @@ describe("A MultiwordToken created by an empty construcor", function() {
         it("should be an instance of Token", function () {
             assert.instanceOf(mwt, Token);
         });
+
+        it("should inherit method split", function () {
+            assert.property(mwt, 'split');
+            assert.typeOf(mwt.split, 'function');
+        });
+
+        it("should inherit method merge", function () {
+            assert.property(mwt, 'merge');
+            assert.typeOf(mwt.merge, 'function');
+        });
     });
 
     describe("property 'id'", function () {

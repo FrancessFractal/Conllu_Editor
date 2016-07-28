@@ -13,6 +13,18 @@ describe("A Sentence object created by an empty construcor", function() {
         sentence = new Sentence();
     });
 
+    describe("object inheritance", function () {
+        it("should inherit method split", function () {
+            assert.property(sentence, 'split');
+            assert.typeOf(sentence.split, 'function');
+        });
+
+        it("should inherit method merge", function () {
+            assert.property(sentence, 'merge');
+            assert.typeOf(sentence.merge, 'function');
+        });
+    });
+
     describe("property 'comments'", function () {
         it("should be a property", function () {
             assert.property(sentence, 'comments');
