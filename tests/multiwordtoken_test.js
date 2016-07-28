@@ -54,7 +54,7 @@ describe("A MultiwordToken created by an empty construcor", function() {
         describe("should be based on its subtokens", function () {
             tests.forEach(function (test) {
                 beforeEach(function () {
-                    mwt.tokens = tests.tokens;
+                    mwt.tokens = test.tokens;
                 });
 
                 context("with subtokens "+test.text, function () {
