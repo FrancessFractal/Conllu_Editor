@@ -2,6 +2,7 @@
 if (typeof exports !== 'undefined' && this.exports !== exports) {
     var Token = require("../scripts/Token.js").Token;
     var MultiwordToken = require("../scripts/MultiwordToken.js").MultiwordToken;
+    var TokenAggregate = require("../scripts/TokenAggregate.js").TokenAggregate;
 
 }
 /**
@@ -43,6 +44,8 @@ var Sentence = function() {
      * @type {Array}
      */
     this.tokens = [];
+
+    TokenAggregate.call(this,'tokens');
 };
 
 Sentence.prototype = {
@@ -105,7 +108,7 @@ Sentence.prototype = {
                 }
             }
             else if (this.tokens[i].id === token_id) {
-                var collapsed = new Token()
+                var collapsed = new Token();
                 collapsed.id = Number(this.tokens[i].id.slice(0,1));
                 collapsed.form = this.tokens[i].form;
                 this.tokens.splice((i), 1, collapsed);
