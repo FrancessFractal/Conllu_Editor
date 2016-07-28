@@ -1,3 +1,9 @@
+// if using Node.js export module
+if (typeof exports !== 'undefined' && this.exports !== exports) {
+    var Token = require("../scripts/Token.js").Token;
+    var MultiwordToken = require("../scripts/MultiwordToken.js").MultiwordToken;
+
+}
 /**
  * A Sentence is a collection of comments, Tokens, and MultiwordTokens representing a sentence within a Conllu file.
  * For example, a Sentence may represent the following lines in a file:
@@ -40,13 +46,72 @@ var Sentence = function() {
 };
 
 Sentence.prototype = {
-    expand: function (token_id, index) {
-        throw new Error("Not Implemented");
-        // TODO: implement
+
+    expand : function (token_id, index) {
+        var found = false;
+        for (var i=0; i < this.tokens.length; i++) {
+            if (found === true) {
+
+                if (!(this.tokens[i] instanceof MultiwordToken)) {
+                    this.tokens[i].id++; //increases id's by 1 after expansion
+                    //console.log(this.tokens[i]);
+                }
+                else {
+
+                    this.tokens[i].tokens.forEach(function (child) {
+                        child.id++; //updates the id's of the children in every multi-word token.
+                        //the parent in a multi-word token updates automatically based on the children.
+                    });
+                }
+            }
+            else if (this.tokens[i].id === token_id) {
+                var initial = new Token(); //variable to store first half of expanded token
+                var second = new Token(); //variable to store second half of expanded token
+                var expandToken = new MultiwordToken(); //create new instance of mwt for expanded token//
+                expandToken.form = this.tokens[i].form;
+                expandToken.id = this.tokens[i].id + "-" + (Number(this.tokens[i].id) + 1); //assigns span id to mwt//
+                initial.form = this.tokens[i].form.slice(0, index);
+                initial.id = this.tokens[i].id;
+                second.form = this.tokens[i].form.slice(index);
+                second.id = Number(this.tokens[i].id) + 1;
+                expandToken.tokens.push(initial);
+                expandToken.tokens.push(second);
+                this.tokens.splice((i), 1, expandToken);// inserts new word at the correct index in the array, removes original token
+                found = true;
+                //console.log(this.tokens[1]);
+            }
+
+        }
     },
+
     collapse: function(token_id) {
-        throw new Error("Not Implemented");
-        // TODO: implement
+
+        found = false;
+
+        for (var i=0; i < this.tokens.length; i++) {
+
+            if (found === true) {
+
+                if (!(this.tokens[i] instanceof MultiwordToken)) {
+                    this.tokens[i].id = Number(this.tokens[i].id - 1); //updates the id's of every token after collapse
+
+                }
+                else {
+                    this.tokens[i].tokens.forEach(function (child) {
+                        child.id = Number(child.id - 1);//updates the id's of the children in every multi-word token.
+
+                        //the parent in a multi-word token updates automatically based on the children.
+                    });
+                }
+            }
+            else if (this.tokens[i].id === token_id) {
+                var collapsed = new Token()
+                collapsed.id = Number(this.tokens[i].id.slice(0,1));
+                collapsed.form = this.tokens[i].form;
+                this.tokens.splice((i), 1, collapsed);
+                found = true;
+            }
+        }
     }
 };
 

@@ -55,7 +55,7 @@ var TokenAggregate = function(token_array) {
                 word.id = token_id;
                 word.form = splitter.form.slice(string_index);
                 splitter.form = splitter.form.slice(0, string_index);
-                this[token_array].splice((Number(x) + 1), 0, word);// inserts new word at the correct index in the array
+                this[token_array].splice((x + 1), 0, word);// inserts new word at the correct index in the array
                 found = true;
             }
 
