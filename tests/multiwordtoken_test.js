@@ -53,11 +53,11 @@ describe("A MultiwordToken created by an empty construcor", function() {
 
         describe("should be based on its subtokens", function () {
             tests.forEach(function (test) {
-                beforeEach(function () {
-                    mwt.tokens = test.tokens;
-                });
-
                 context("with subtokens "+test.text, function () {
+                    beforeEach(function () {
+                        mwt.tokens = test.tokens;
+                    });
+
                     it("should have id '"+test.id+"'", function () {
                         assert.strictEqual(mwt.id,test.id);
                     })
