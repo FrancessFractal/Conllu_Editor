@@ -21,12 +21,13 @@ if (typeof exports !== 'undefined' && this.exports !== exports) {
  *
  * @constructor
  */
-var MultiwordToken = function() {
-    Token.call(this);
-    this.tokens = [];
-    TokenAggregate.call(this,'tokens');
+var MultiwordToken = function() { //constructor for Multiword Tokens
+    Token.call(this); // gives the MWT all the properties created in the Token constructor (note: not token prototype)
+    this.tokens = []; // creates the array that contains the children of the MWT
+    TokenAggregate.call(this,'tokens'); //gives the MWT all the properties created in the TA constructor
 };
-MultiwordToken.prototype = new Token();
+MultiwordToken.prototype = new Token(); // gives new instance of MWT the properties of a new instance of Token
+//note: still working this out.
 
 /**
  * The id in a MultiwordToken is based on the MultiwordToken's subtokens.
@@ -34,14 +35,19 @@ MultiwordToken.prototype = new Token();
  * The id cannot be updated here.
  * @type {String}
  */
-Object.defineProperty(MultiwordToken,'id',{
+Object.defineProperty(MultiwordToken.prototype,'id',{ //to prototype or not to prototype...
     get: function() {
-        throw new Error("Not Implemented");
-        // TODO: implement
+        if (this.tokens.length < 1){
+            return "?-?"; // if the multi-word token doesn't have any children (tokens length is 0), alert. Do not allow to save.
+        }
+        var first = this.tokens[0];
+        var last = this.tokens[this.tokens.length-1];
+        id = first.id + "-" + last.id; // assign mwt id to be "smallestID-largestID"
+        return String(id); //return in string version
     },
+
     set: function(value) {
-        throw new Error("Not Implemented");
-        // TODO: implement
+        throw new Error("Ignoring attempt to set multiword token id to " + value);
     }
 });
 
