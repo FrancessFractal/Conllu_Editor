@@ -197,6 +197,11 @@ describe("A Sentence object created by an empty construcor", function() {
                         if(obj.hasOwnProperty('tokens')) {
                             sentence.tokens[index] = new MultiwordToken();
                             sentence.tokens[index].form = obj.form;
+                            obj.tokens.forEach(function (t, index2) {
+                                sentence.tokens[index].tokens[index2] = new Token();
+                                sentence.tokens[index].tokens[index2].id = t.id;
+                                sentence.tokens[index].tokens[index2].form = t.form;
+                            })
                         } else {
                             sentence.tokens[index] = new Token();
                             sentence.tokens[index].id = obj.id;
