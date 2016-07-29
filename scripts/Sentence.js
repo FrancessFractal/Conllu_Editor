@@ -95,12 +95,12 @@ Sentence.prototype = {
 
             if (found === true) {
                 if (!(this.tokens[i] instanceof MultiwordToken)) {
-                    this.tokens[i].id = Number(this.tokens[i].id - mwt_length-1); //updates the id's of every token after collapse
+                    this.tokens[i].id = Number(this.tokens[i].id - (mwt_length-1)); //updates the id's of every token after collapse
                     //note: also valid if mwt has more than 2 sub-tokens
                 }
                 else {
                     this.tokens[i].tokens.forEach(function (child) {
-                        child.id = Number(child.id - mwt_length-1);//updates the id's of the children in every multi-word token.
+                        child.id = Number(child.id - (mwt_length-1));//updates the id's of the children in every multi-word token.
                         //the parent in a multi-word token updates automatically based on the children.
                     });
                 }
