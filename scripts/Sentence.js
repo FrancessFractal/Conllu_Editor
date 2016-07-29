@@ -67,19 +67,20 @@ Sentence.prototype = {
                     });
                 }
             }
-            else if (this.tokens[i].id === token_id) {
+            else if (this.tokens[i].id === token_id && !(this.tokens[i] instanceof MultiwordToken)) {
                 var initial = new Token(); //variable to store first half of expanded token
                 var second = new Token(); //variable to store second half of expanded token
                 var expandToken = new MultiwordToken(); //create new instance of mwt for expanded token//
-                expandToken.form = this.tokens[i].form;
-                expandToken.id = this.tokens[i].id + "-" + (Number(this.tokens[i].id) + 1); //assigns span id to mwt//
+
+                expandToken.form = this.tokens[i].form; // only duplicate form; id depends on id's of sub-tokens; other properties should be undefined
                 initial.form = this.tokens[i].form.slice(0, index);
-                initial.id = this.tokens[i].id;
+                initial.id = this.tokens[i].id; //update id of first sub-token
                 second.form = this.tokens[i].form.slice(index);
-                second.id = Number(this.tokens[i].id) + 1;
+                second.id = Number(this.tokens[i].id) + 1; //update id of second sub-token
                 expandToken.tokens.push(initial);
                 expandToken.tokens.push(second);
                 this.tokens.splice((i), 1, expandToken);// inserts new word at the correct index in the array, removes original token
+                //note: all information stored in initial token is lost. To be confirmed.
                 found = true;
                 //console.log(this.tokens[1]);
             }
@@ -89,30 +90,32 @@ Sentence.prototype = {
 
     collapse: function(token_id) {
 
-        found = false;
-
+        var found = false;
         for (var i=0; i < this.tokens.length; i++) {
 
             if (found === true) {
-
                 if (!(this.tokens[i] instanceof MultiwordToken)) {
-                    this.tokens[i].id = Number(this.tokens[i].id - 1); //updates the id's of every token after collapse
-
+                    this.tokens[i].id = Number(this.tokens[i].id - mwt_length-1); //updates the id's of every token after collapse
+                    //note: also valid if mwt has more than 2 sub-tokens
                 }
                 else {
                     this.tokens[i].tokens.forEach(function (child) {
-                        child.id = Number(child.id - 1);//updates the id's of the children in every multi-word token.
-
+                        child.id = Number(child.id - mwt_length-1);//updates the id's of the children in every multi-word token.
                         //the parent in a multi-word token updates automatically based on the children.
                     });
                 }
             }
-            else if (this.tokens[i].id === token_id) {
-                var collapsed = new Token();
-                collapsed.id = Number(this.tokens[i].id.slice(0,1));
-                collapsed.form = this.tokens[i].form;
-                this.tokens.splice((i), 1, collapsed);
-                found = true;
+            else if (this.tokens[i].id === token_id) { // note: must be a string, since the id of a mwt is a string
+                if (this.tokens[i] instanceof MultiwordToken) { //collapse only applies to mwt
+                    var mwt_length = this.tokens[i].tokens.length;// find the length of the mwt sub-tokens array, for updating other values
+                    var collapsed = new Token(); // note: is not a mwt
+                    //collapsed.id = Number(this.tokens[i].id.slice(0,1)); // wouldn't work for mwt token 34-35, for example.
+                    collapsed.id = Number(this.tokens[i].tokens[0].id);// token "collapsed" can be assigned an id: takes the id of the first child of the mwt
+                    collapsed.form = this.tokens[i].form;
+                    this.tokens.splice((i), 1, collapsed);
+                    found = true;
+                }
+                //if this.tokens[i] isn't an instance of a MultiwordToken, do nothing.
             }
         }
     }
