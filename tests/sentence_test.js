@@ -131,22 +131,21 @@ describe("A Sentence object created by an empty construcor", function() {
                                     assert.lengthOf(sentence.tokens[index].tokens,gold.tokens.length);
                                 });
 
-
-                                for (var mindex in gold.tokens) {
+                                gold.tokens.forEach(function (tok_gold, mindex) {
                                     describe("Subtoken in position "+mindex, function () {
                                         it("should be an instance of Token", function () {
                                             assert.instanceOf(sentence.tokens[index].tokens[mindex],Token);
                                         });
 
                                         it("should have id "+gold.tokens[mindex].id, function () {
-                                            assert.strictEqual(sentence.tokens[index].tokens[mindex].id,gold.tokens[mindex].id)
+                                            assert.strictEqual(sentence.tokens[index].tokens[mindex].id,tok_gold.id)
                                         });
 
                                         it("should have form "+gold.tokens[mindex].form, function () {
-                                            assert.strictEqual(sentence.tokens[index].tokens[mindex].form,gold.tokens[mindex].form);
+                                            assert.strictEqual(sentence.tokens[index].tokens[mindex].form,tok_gold.form);
                                         });
                                     });
-                                };
+                                });
 
                             } else {
                                 it("should not be an instance of MultiwordToken", function () {
@@ -240,22 +239,21 @@ describe("A Sentence object created by an empty construcor", function() {
                                     assert.lengthOf(sentence.tokens[index].tokens,gold.tokens.length);
                                 });
 
-
-                                for (var mindex in gold.tokens) {
+                                gold.tokens.forEach(function (tok_gold, mindex) {
                                     describe("Subtoken in position "+mindex, function () {
                                         it("should be an instance of Token", function () {
                                             assert.instanceOf(sentence.tokens[index].tokens[mindex],Token);
                                         });
 
                                         it("should have id "+gold.tokens[mindex].id, function () {
-                                            assert.strictEqual(sentence.tokens[index].tokens[mindex].id,gold.tokens[mindex].id)
+                                            assert.strictEqual(sentence.tokens[index].tokens[mindex].id,tok_gold.id)
                                         });
 
                                         it("should have form "+gold.tokens[mindex].form, function () {
-                                            assert.strictEqual(sentence.tokens[index].tokens[mindex].form,gold.tokens[mindex].form);
+                                            assert.strictEqual(sentence.tokens[index].tokens[mindex].form,tok_gold.form);
                                         });
                                     });
-                                };
+                                });
 
                             } else {
                                 it("should not be an instance of MultiwordToken", function () {
@@ -281,16 +279,16 @@ describe("A Sentence object created by an empty construcor", function() {
         });
 
         describe("get", function () {
-            for (var sent_index in conllu_gold.sentences) {
+            conllu_gold.sentences.forEach(function (sent_gold, sent_index) {
                 beforeEach(function () {
                     // create dummy sentences whose serial properties match the conllu file
-                    sentence.tokens = conllu_gold.sentences[sent_index].tokens;
+                    sentence.tokens = sent_gold.tokens;
                 });
 
                 it("Sentence: " + conllu_gold.sentences[sent_index].text, function () {
-                    assert.strictEqual(sentence.serial, conllu_gold.sentences[sent_index].serial);
+                    assert.strictEqual(sentence.serial, sent_gold.serial);
                 });
-            }
+            });
         });
     });
 
