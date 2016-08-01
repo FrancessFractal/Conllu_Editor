@@ -91,7 +91,7 @@ var conllu = {
         },
         {
             text: "I haven't a clue.",
-            serial: fs.readFileSync('tests/example1/sent0/serial.txt').toString(),
+            serial: fs.readFileSync('tests/example1/sent1/serial.txt').toString(),
             comments: [" sent_id 2"," ..."],
             tokens: [
                 {
@@ -186,7 +186,7 @@ var conllu = {
                     deprel: "punct",
                     deps: undefined,
                     misc: undefined
-                },
+                }
             ]
         }
     ]
