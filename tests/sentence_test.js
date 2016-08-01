@@ -283,6 +283,7 @@ describe("A Sentence object created by an empty construcor", function() {
                 beforeEach(function () {
                     // create dummy sentences whose serial properties match the conllu file
                     sentence.tokens = sent_gold.tokens;
+                    sentence.comments = sent_gold.comments;
                 });
 
                 it("Sentence: " + conllu_gold.sentences[sent_index].text, function () {
