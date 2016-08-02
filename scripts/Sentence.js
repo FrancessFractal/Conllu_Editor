@@ -124,9 +124,22 @@ Sentence.prototype = {
 Object.defineProperty(Sentence.prototype,'serial',
     {
         get: function() {
-            throw new Error("Not Implemented");
-            // TODO: implement
-        },
+
+            var serialArray = [];
+            console.log("hello")
+
+            for (var i = 0; i < this.comments.length; i ++){ 
+                serialArray.push(this.comments[i]);
+                console.log("these are comments: "+this.comments[i]);
+            }
+
+            for (var i= 0; i < this.tokens.length; i++) {
+                serialArray.push(this.tokens[i].serial);
+            }
+
+            var serial = serialArray.join("\n");
+            return serial
+},
         set: function() {
             throw new Error("Not Implemented");
             //TODO: implement
