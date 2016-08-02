@@ -19,8 +19,16 @@ var Conllu = function() {
 Object.defineProperty(Conllu.prototype,'serial',
     {
         get: function() {
-            throw new Error("Not Implemented");
-            // TODO: implement
+            var serialArray = [];
+
+            for (var i= 0; i < this.sentences.length; i++) {
+                serialArray.push(this.sentences[i].serial);
+            }
+
+            var serial = serialArray.join("\n");
+            console.log(serial)
+            return serial
+
         },
         set: function() {
             throw new Error("Not Implemented");
