@@ -7,6 +7,102 @@ chai = require("chai");
 var assert = chai.assert;
 var conllu_gold = require("../tests/example1/conllu_obj.js").conllu;
 
+var assertTokensEquivalent = function (tokens, gold_tokens, parent) {
+    if (parent === undefined) {
+        parent = '';
+    } else {
+        parent = ' of '+parent;
+    }
+
+    assert.lengthOf(tokens, gold_tokens.length, 'expected tokens array to have length '+gold_tokens.length);
+    gold_tokens.forEach(function (gold_token, index) {
+
+        // every token should be an instance of Token and should have matching properties (except for id)
+        assert.instanceOf(tokens[index],
+            Token,
+            'expected token '+index+parent+' to be a Token');
+
+        assert.strictEqual(tokens[index].form,
+            gold_token.form,
+            'expected token '+index+parent+' to have form '+gold_token.form);
+        assert.strictEqual(tokens[index].lemma,
+            gold_token.lemma,
+            'expected token '+index+parent+' to have lemma '+gold_token.lemma);
+        assert.strictEqual(tokens[index].upostag,
+            gold_token.upostag,
+            'expected token '+index+parent+' to have upostag '+gold_token.upostag);
+        assert.strictEqual(tokens[index].xpostag,
+            gold_token.xpostag,
+            'expected token '+index+parent+' to have xpostag '+gold_token.xpostag);
+        assert.strictEqual(tokens[index].feats,
+            gold_token.feats,
+            'expected token '+index+parent+' to have feats '+gold_token.feats);
+        assert.strictEqual(tokens[index].head,
+            gold_token.head,
+            'expected token '+index+parent+' to have head '+gold_token.head);
+        assert.strictEqual(tokens[index].deprel,
+            gold_token.deprel,
+            'expected token '+index+parent+' to have deprel '+gold_token.deprel);
+        assert.strictEqual(tokens[index].deps,
+            gold_token.deps,
+            'expected token '+index+parent+' to have deps '+gold_token.deps);
+        assert.strictEqual(tokens[index].misc,
+            gold_token.misc,
+            'expected token '+index+parent+' to have misc '+gold_token.misc);
+
+        // if gold has a tokens property, it reperesents a MultiwordToken
+        if(gold_token.hasOwnProperty('tokens')) {
+            assert.instanceOf(tokens[index],
+                MultiwordToken,
+                'expected token '+index+' to be a MultiwordToken');
+
+            assert.lengthOf(tokens[index].tokens,
+                gold_token.tokens.length,
+                'expected MultiwordToken '+index+'('+gold_token.form+') to have '+gold_token.tokens.length+' subtokens');
+
+
+            gold_token.tokens.forEach(function (subtok_gold, subindex) {
+                assert.instanceOf(tokens[index].tokens[subindex],
+                    Token,
+                    'expected subtoken '+subindex+' of MultiwordToken '+index+'('+gold_token.form+') to be a Token');
+            });
+
+            assertTokensEquivalent(tokens[index].tokens, gold_token.tokens, 'token '+index+' ('+gold_token.form+')');
+        } else {
+            // Do not check id of MultiwordTokens, since it is a computed property
+            assert.strictEqual(tokens[index].id,
+                gold_token.id,
+                'expected token '+index+' to have form '+gold_token.id);
+        }
+    });
+};
+
+var assertCommentsEquivalent = function (comments, gold_comments) {
+
+    assert.lengthOf(comments,
+        gold_comments.length,
+        'expected comments property to have length '+gold_comments.length);
+    gold_comments.forEach(function (gold_comment, index) {
+        assert.strictEqual(comments[index],
+            gold_comment,
+            'expected comment '+index+' to be "'+gold_comment+'"');
+    });
+};
+
+var assertSentenceEquivalent = function(sentence, gold_sent) {
+    assert.property(sentence,
+        'comments','expected Sentence to have comments property');
+    assert.typeOf(sentence.comments,
+        'array','expected comments property to be an array');
+    assertCommentsEquivalent(sentence.comments, gold_sent.comments);
+
+    assert.property(sentence,
+        'tokens','expected Sentence to have tokens property');
+    assert.typeOf(sentence.tokens,
+        'array','expected tokens property to be an array');
+    assertTokensEquivalent(sentence.tokens, gold_sent.tokens)
+};
+
 describe("A Sentence object created by an empty construcor", function() {
     var sentence;
     beforeEach(function() {
@@ -103,62 +199,10 @@ describe("A Sentence object created by an empty construcor", function() {
                 });
 
                 describe("tokens property after calling expand("+test.token+","+test.index+")", function () {
-
-
-                    it("should be length "+test.after.length, function () {
-                        assert.lengthOf(sentence.tokens,test.after.length);
-                    });
-
-
-                    test.after.forEach(function (gold,index) {
-                        describe("Token in position "+index, function () {
-
-                            it("should have form "+gold.form, function () {
-                                assert.strictEqual(sentence.tokens[index].form,gold.form);
-                            });
-
-                            it("should be an instance of Token", function () {
-                                assert.instanceOf(sentence.tokens[index],Token);
-                            });
-
-                            if(gold.hasOwnProperty('tokens')) {
-
-                                it("should be an instance of MultiwordToken", function () {
-                                    assert.instanceOf(sentence.tokens[index],MultiwordToken);
-                                });
-
-                                it("should have "+gold.tokens.length+" subtokens", function () {
-                                    assert.lengthOf(sentence.tokens[index].tokens,gold.tokens.length);
-                                });
-
-                                gold.tokens.forEach(function (tok_gold, mindex) {
-                                    describe("Subtoken in position "+mindex, function () {
-                                        it("should be an instance of Token", function () {
-                                            assert.instanceOf(sentence.tokens[index].tokens[mindex],Token);
-                                        });
-
-                                        it("should have id "+gold.tokens[mindex].id, function () {
-                                            assert.strictEqual(sentence.tokens[index].tokens[mindex].id,tok_gold.id)
-                                        });
-
-                                        it("should have form "+gold.tokens[mindex].form, function () {
-                                            assert.strictEqual(sentence.tokens[index].tokens[mindex].form,tok_gold.form);
-                                        });
-                                    });
-                                });
-
-                            } else {
-                                it("should not be an instance of MultiwordToken", function () {
-                                    assert.notInstanceOf(sentence.tokens[index],MultiwordToken);
-                                });
-
-                                // We do not check the id of MultiwordTokens because it is a computed field,
-                                // and this is just meant to test that all id and form values are set properly.
-                                it("should have id "+gold.id, function () {
-                                    assert.strictEqual(sentence.tokens[index].id,gold.id)
-                                });
-                            }
-                        });
+                    it('should have tokens matching gold', function () {
+                        assert.property(sentence,'tokens');
+                        assert.typeOf(sentence.tokens,'array');
+                        assertTokensEquivalent(sentence.tokens, test.after);
                     });
                 });
             });
@@ -211,62 +255,10 @@ describe("A Sentence object created by an empty construcor", function() {
                 });
 
                 describe("tokens property after calling collapse("+test.token+")", function () {
-
-
-                    it("should be length "+test.after.length, function () {
-                        assert.lengthOf(sentence.tokens,test.after.length);
-                    });
-
-
-                    test.after.forEach(function (gold,index) {
-                        describe("Token in position "+index, function () {
-
-                            it("should have form "+gold.form, function () {
-                                assert.strictEqual(sentence.tokens[index].form,gold.form);
-                            });
-
-                            it("should be an instance of Token", function () {
-                                assert.instanceOf(sentence.tokens[index],Token);
-                            });
-
-                            if(gold.hasOwnProperty('tokens')) {
-
-                                it("should be an instance of MultiwordToken", function () {
-                                    assert.instanceOf(sentence.tokens[index],MultiwordToken);
-                                });
-
-                                it("should have "+gold.tokens.length+" subtokens", function () {
-                                    assert.lengthOf(sentence.tokens[index].tokens,gold.tokens.length);
-                                });
-
-                                gold.tokens.forEach(function (tok_gold, mindex) {
-                                    describe("Subtoken in position "+mindex, function () {
-                                        it("should be an instance of Token", function () {
-                                            assert.instanceOf(sentence.tokens[index].tokens[mindex],Token);
-                                        });
-
-                                        it("should have id "+gold.tokens[mindex].id, function () {
-                                            assert.strictEqual(sentence.tokens[index].tokens[mindex].id,tok_gold.id)
-                                        });
-
-                                        it("should have form "+gold.tokens[mindex].form, function () {
-                                            assert.strictEqual(sentence.tokens[index].tokens[mindex].form,tok_gold.form);
-                                        });
-                                    });
-                                });
-
-                            } else {
-                                it("should not be an instance of MultiwordToken", function () {
-                                    assert.notInstanceOf(sentence.tokens[index],MultiwordToken);
-                                });
-
-                                // We do not check the id of MultiwordTokens because it is a computed field,
-                                // and this is just meant to test that all id and form values are set properly.
-                                it("should have id "+gold.id, function () {
-                                    assert.strictEqual(sentence.tokens[index].id,gold.id)
-                                });
-                            }
-                        });
+                    it('should have tokens matching gold', function () {
+                        assert.property(sentence,'tokens');
+                        assert.typeOf(sentence.tokens,'array');
+                        assertTokensEquivalent(sentence.tokens, test.after);
                     });
                 });
             });
@@ -279,15 +271,31 @@ describe("A Sentence object created by an empty construcor", function() {
         });
 
         describe("get", function () {
-            conllu_gold.sentences.forEach(function (sent_gold, sent_index) {
-                beforeEach(function () {
-                    // create dummy sentences whose serial properties match the conllu file
-                    sentence.tokens = sent_gold.tokens;
-                    sentence.comments = sent_gold.comments;
-                });
+            conllu_gold.sentences.forEach(function (sent_gold) {
+                context("Sentence: "+sent_gold.text, function () {
+                    beforeEach(function () {
+                        // create dummy sentences whose serial properties match the conllu file
+                        sentence.tokens = sent_gold.tokens;
+                        sentence.comments = sent_gold.comments;
+                    });
 
-                it("Sentence: " + conllu_gold.sentences[sent_index].text, function () {
-                    assert.strictEqual(sentence.serial, sent_gold.serial);
+                    it("Should equal "+sent_gold.serial, function () {
+                        assert.strictEqual(sentence.serial, sent_gold.serial);
+                    });
+                });
+            });
+        });
+
+        describe("set", function () {
+            conllu_gold.sentences.forEach(function (sent_gold) {
+                context("Sentence: " + sent_gold.text, function () {
+                    beforeEach(function () {
+                        sentence.serial = sent_gold.serial;
+                    });
+
+                    it('should be equivalent to gold sentence', function () {
+                        assertSentenceEquivalent(sentence, sent_gold);
+                    });
                 });
             });
         });
