@@ -38,7 +38,7 @@ MultiwordToken.prototype = new Token(); // gives new instance of MWT the propert
 Object.defineProperty(MultiwordToken.prototype,'id',{ //to prototype or not to prototype...
     get: function() {
         if (this.tokens.length < 1){
-            return "?-?"; // if the multi-word token doesn't have any children (tokens length is 0), alert. Do not allow to save.
+            return "?-?"; // if the multi-word token doesn't have any children (length of sub-array tokens is 0), alert. Do not allow to save.
         }
         var first = this.tokens[0];
         var last = this.tokens[this.tokens.length-1];
@@ -47,16 +47,25 @@ Object.defineProperty(MultiwordToken.prototype,'id',{ //to prototype or not to p
     },
 
     set: function(value) {
-        throw new Error("Ignoring attempt to set multiword token id to " + value);
+        throw new Error("Ignoring attempt to set multi-word token id to " + value);
     }
 });
 
 Object.defineProperty(MultiwordToken,'serial',{
     get: function() {
+        /*
+        {mwt id, mwt form [
+        {ct id, ct form, etc}
+        {ct id, ct form, etc}
+        ]
+        }
+         */
+        // takes this multiword token object and returns a string
         throw new Error("Not Implemented");
         // TODO: implement
     },
     set: function() {
+        //takes a string and sets this multiword object's value to match the string.
         throw new Error("Not Implemented");
         //TODO: implement
     }
