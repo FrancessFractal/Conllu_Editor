@@ -1,7 +1,23 @@
 
-var Sentence = require("../scripts/Sentence.js").Sentence;
-var Token = require("../scripts/Token.js").Token;
-var MultiwordToken = require("../scripts/MultiwordToken.js").MultiwordToken;
+var rewire = require('rewire');
+
+var module = rewire("../scripts/Sentence.js");
+var Token = function () {};
+module.__set__('Token', Token);
+
+var MultiwordToken = function () {
+    this.tokens = [];
+};
+MultiwordToken.prototype = new Token();
+module.__set__('MultiwordToken', MultiwordToken);
+
+var TokenAggregate = function () {
+    this.__token_aggregate__ = true;
+};
+module.__set__('TokenAggregate', TokenAggregate);
+
+var Sentence = module.Sentence;
+
 
 chai = require("chai");
 var assert = chai.assert;
@@ -72,7 +88,7 @@ var assertTokensEquivalent = function (tokens, gold_tokens, parent) {
             // Do not check id of MultiwordTokens, since it is a computed property
             assert.strictEqual(tokens[index].id,
                 gold_token.id,
-                'expected token '+index+' to have form '+gold_token.id);
+                'expected token '+index+parent+' to have id '+gold_token.id);
         }
     });
 };
@@ -110,14 +126,10 @@ describe("A Sentence object created by an empty construcor", function() {
     });
 
     describe("object inheritance", function () {
-        it("should inherit method split", function () {
-            assert.property(sentence, 'split');
-            assert.typeOf(sentence.split, 'function');
-        });
 
-        it("should inherit method merge", function () {
-            assert.property(sentence, 'merge');
-            assert.typeOf(sentence.merge, 'function');
+        it("should inherit from TokenAggregate's constructor", function () {
+            assert.property(sentence,'__token_aggregate__');
+            assert.strictEqual(sentence.__token_aggregate__,true);
         });
     });
 
@@ -251,7 +263,7 @@ describe("A Sentence object created by an empty construcor", function() {
                             sentence.tokens[index].form = obj.form;
                         }
                     });
-                    sentence.collapse(test.token);
+                    sentence.collapse(test.token.id);
                 });
 
                 describe("tokens property after calling collapse("+test.token+")", function () {
@@ -293,8 +305,24 @@ describe("A Sentence object created by an empty construcor", function() {
                         sentence.serial = sent_gold.serial;
                     });
 
-                    it('should be equivalent to gold sentence', function () {
-                        assertSentenceEquivalent(sentence, sent_gold);
+                    it("should have "+sent_gold.comments.length+" comments", function () {
+                        assert.lengthOf(sentence.comments, sent_gold.comments.length);
+                    });
+
+                    sent_gold.comments.forEach(function (comment_gold, index) {
+                        it('comment '+index+" should be "+comment_gold, function () {
+                            assert.strictEqual(sentence.comments[index],comment_gold);
+                        });
+                    });
+
+                    it("should have "+sent_gold.tokens.length+" tokens", function () {
+                        assert.lengthOf(sentence.tokens, sent_gold.tokens.length);
+                    });
+
+                    sent_gold.tokens.forEach(function (token_gold, index) {
+                        it('token '+index+" should have serial "+token_gold.serial, function () {
+                            assert.strictEqual(sentence.tokens[index].serial, token_gold.serial);
+                        });
                     });
                 });
             });
