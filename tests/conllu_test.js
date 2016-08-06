@@ -1,5 +1,14 @@
 
-var Conllu = require("../scripts/Conllu.js").Conllu;
+var rewire = require('rewire');
+
+var module = rewire('../scripts/Conllu.js');
+
+// Stub for Sentence
+var Sentence = function () {};
+module.__set__('Sentence', Sentence);
+
+
+var Conllu = module.Conllu;
 var conllu_gold = require("../tests/example1/conllu_obj.js").conllu;
 
 chai = require("chai");
@@ -49,6 +58,29 @@ describe("A Conllu object created with an empty constructor", function () {
 
             it("should return the sentences' serial properties concatenated with new lines. ", function () {
                 assert.strictEqual(conllu.serial, conllu_gold.serial);
+            });
+        });
+
+        describe("seting to conllu gold file contents", function () {
+            beforeEach( function () {
+                conllu.serial = conllu_gold.serial;
+            });
+            
+            it("should have "+conllu_gold.sentences.length+" sentences", function () {
+                assert.lengthOf(conllu.sentences, conllu_gold.sentences.length);
+            });
+
+            conllu_gold.sentences.forEach(function (sentence_gold, index) {
+                context("sentence "+index, function () {
+
+                    it("should be an instance of Sentence", function () {
+                        assert.instanceOf(conllu.sentences[index], Sentence);
+                    });
+
+                    it("should have serial set to "+sentence_gold.serial, function () {
+                        assert.strictEqual(conllu.sentences[index].serial, sentence_gold.serial);
+                    });
+                });
             });
         });
     });
