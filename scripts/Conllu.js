@@ -1,3 +1,7 @@
+// if using Node.js export module
+if (typeof exports !== 'undefined' && this.exports !== exports) {
+    var Sentence = require("../scripts/Sentence.js").Sentence;
+}
 /**
  * Conllu
  * A Conllu represents the contents of a Conllu file.
@@ -25,16 +29,29 @@ Object.defineProperty(Conllu.prototype,'serial',
                 serialArray.push(this.sentences[i].serial);
             }
 
-            var serial = serialArray.join("\n");
-            console.log(serial)
-            return serial
+            return serialArray.join("\n");
+
 
         },
-        set: function() {
-            throw new Error("Not Implemented");
-            // TODO: implement
+        set: function(arg) {
+            var lines = arg.split("\n");
+            var sent = [];
+
+            for (var i = 0; i < lines.length; i ++){
+                if (lines[i] === ""){
+                    sent.push(lines[i]);
+                    var sentCat = sent.join("\n");
+                    setSentence = new Sentence();
+                    setSentence.serial = sentCat;
+                    this.sentences.push(setSentence);
+                    sent = []
+                } else {
+                    sent.push(lines[i]);
+                }
+            }
+            }
+
         }
-    }
 );
 
 // if using Node.js export module

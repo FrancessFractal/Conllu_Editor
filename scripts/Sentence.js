@@ -123,30 +123,78 @@ Sentence.prototype = {
 
 Object.defineProperty(Sentence.prototype,'serial',
     {
-        get: function() {
+        get: function () {
 
             var serialArray = [];
-            console.log("hello")
 
-            for (var i = 0; i < this.comments.length; i ++){ 
-                serialArray.push(this.comments[i]);
-                console.log("these are comments: "+this.comments[i]);
+            for (var i = 0; i < this.comments.length; i++) {
+                serialArray.push("#" + this.comments[i]);
+
             }
 
-            for (var i= 0; i < this.tokens.length; i++) {
+            for (var i = 0; i < this.tokens.length; i++) {
                 serialArray.push(this.tokens[i].serial);
             }
+            serialArray.push(""); //add empty string for line break after sentence
+            return serialArray.join("\n");
+        },
+        set: function (arg) {
+            this.comments = [];
+            this.tokens = [];
+            var lines = arg.split("\n");
+            for (var i = 0; i < lines.length; i++) { //identify comments in string & add to comments array
+                if (lines[i].startsWith("\#")) {
+                    this.comments.push(lines[i]);
+                    this.comments[i] = this.comments[i].substring(1);
+                }
+            }
 
-            var serial = serialArray.join("\n");
-            return serial
-},
-        set: function() {
-            throw new Error("Not Implemented");
-            //TODO: implement
+            var mwtSubIds = [];
+            for (var i = 0; i < lines.length; i++){
+                var fields = [];
+                fields = lines[i].split("\t"); //split into subfields to identify mwt ids
+                var currentLineId = fields[0];
+                if (!(lines[i].startsWith("\#")) && !(lines[i] === '')) { //find non-comments/non-empty lines
+                    var mwtId = null;
+                    if (fields[0].includes("-")){
+                        mwtString = lines[i] + "\n";
+                        mwtId = fields[0];
+                        var first = Number(mwtId[0]);
+                        var last = Number(mwtId[2]);
+                        var span = [];
+                        while(first <= last) {
+                            span.push(Number(first++)); //get span of mwt ids to match all mwt subtoken ids
+                        }
+                        mwtSubIds = span.map(function(id){
+                            return id
+                        });
+                        span = span.map(String);
+                        for (var j = 0; j < lines.length; j++) { //add all subtokens to mwt string
+                            var innerFields = [];
+                            innerFields = lines[j].split("\t");
+                            for (var x = 0; x < span.length; x++){
+                                if (span[x] === innerFields[0]){
+                                    mwtString = mwtString + (lines[j] + "\n");
+                                }
+                            }
+                        }
+                        mwtString = mwtString.substring(0, mwtString.length - 1);
+                        var setMwt = new MultiwordToken();
+                        setMwt.serial = mwtString;//serialize mwt string
+                        this.tokens.push(setMwt);
+
+                    } else if (mwtSubIds.indexOf(Number(currentLineId)) === -1) {
+
+                            var setToken = new Token();
+                            setToken.serial = lines[i];
+                            this.tokens.push(setToken);
+                    }
+            }
+
+            }
         }
     }
 );
-
 // if using Node.js export module
 if (typeof exports !== 'undefined' && this.exports !== exports) {
     exports.Sentence = Sentence;
