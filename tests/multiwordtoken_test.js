@@ -76,6 +76,16 @@ describe("A MultiwordToken created by an empty construcor", function() {
                 sent_gold.tokens.forEach(function (mwt_gold) {
                     if(mwt_gold.hasOwnProperty('tokens')) {
                         beforeEach(function () {
+                            mwt.form = mwt_gold.form;
+                            mwt.lemma = mwt_gold.lemma;
+                            mwt.upostag = mwt_gold.upostag;
+                            mwt.xpostag = mwt_gold.xpostag;
+                            mwt.feats = mwt_gold.feats;
+                            mwt.head = mwt_gold.head;
+                            mwt.deprel = mwt_gold.deprel;
+                            mwt.deps = mwt_gold.deps;
+                            mwt.misc = mwt_gold.misc;
+
                             mwt_gold.tokens.forEach(function (token_gold) {
                                 var token = new Token();
                                 token.id = token_gold.id;
