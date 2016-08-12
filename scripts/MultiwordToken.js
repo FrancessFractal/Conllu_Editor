@@ -51,21 +51,26 @@ Object.defineProperty(MultiwordToken.prototype,'id',{ //to prototype or not to p
     }
 });
 
-Object.defineProperty(MultiwordToken,'serial',{
+Object.defineProperty(MultiwordToken.prototype,'serial',{
     get: function() {
         var finalString = "";
         var parentForm = this.form;
         if (parentForm.includes("'")){ // changes "haven't" to "haven\'t", and similar words
             parentForm = parentForm.replace("'", "\'")
         }
-        var headMWT = this.id + "\t" + parentForm + /\t_{8}/ + "\r\n"; // the parent mwt has an id, a form, and 8 empty tabs
+
+        // Find the serial property from the Token object, and use that to serialize the MWT line
+        var parentSerialGetter = Object.getOwnPropertyDescriptor(Token.prototype,'serial');
+        var headMWT = parentSerialGetter.get.call(this);
+
         finalString = finalString + headMWT; // add parent mwt to the final string
         console.log ("Head multiword token: " + finalString);
         for (word in this.tokens){
-            finalString = finalString+this.tokens[word].serial()+"\n"; // iteratively add each child to the final string.
+            finalString = finalString+this.tokens[word].serial+"\n"; // iteratively add each child to the final string.
         }
         console.log ("Full MWToken: "+ finalString);
 
+        return finalString;
         /*
         {mwt id, mwt form [
         {ct id, ct form, etc}
