@@ -28,65 +28,62 @@ Object.defineProperty(Token.prototype,'serial',
             // takes this token object and returns a string
             // no iteration through the properties of the object, because of non-conllu properties (ex: "serialize" property)
             var id_output = "_";
-            if (!(this.id === undefined)){
+            if (!(this.id === undefined) && !(this.id === "")){
                 id_output = String(this.id);
             }
 
             var form_output = "_";
-            if (!(this.form === undefined)){
+            if (!(this.id === undefined) && !(this.id === "")){
                 form_output = String(this.form);
             }
 
             var lemma_output = "_";
-            if (!(this.form === undefined)){
+            if (!(this.lemma === undefined) && !(this.lemma === "")){
                 lemma_output = String(this.lemma);
             }
 
             var upostag_output = "_";
-            if (!(this.upostag === undefined)){
+            if (!(this.upostag === undefined) && !(this.upostag === "")){
                 upostag_output = String(this.upostag);
             }
 
             var xpostag_output = "_";
-            if (!(this.xpostag === undefined)){
+            if (!(this.xpostag === undefined) && !(this.xpostag === "")){
                 xpostag_output = String(this.xpostag);
             }
 
             var feats_output = "_";
-            if (!(this.feats === undefined)){
+            if (!(this.feats === undefined) && !(this.feats === "")){
                 feats_output = String(this.feats);
             }
 
             var head_output = "_";
-            if (!(this.head === undefined)){
+            if (!(this.head === undefined) && !(this.head === "")){
                 head_output = String(this.head);
             }
 
             var deprel_output = "_";
-            if (!(this.deprel === undefined)){
+            if (!(this.deprel === undefined) && !(this.deprel === "")){
                 deprel_output = String(this.deprel);
             }
 
             var deps_output = "_";
-            if (!(this.deps === undefined)){
+            if (!(this.deps === undefined) && !(this.deps === "")){
                 deps_output = String(this.deps);
             }
 
             var misc_output = "_";
-            if (!(this.misc === undefined)){
+            if (!(this.misc === undefined) && !(this.misc === "")){
                 misc_output = String(this.misc);
             }
 
             return (id_output + "\t" + form_output + "\t" + lemma_output + "\t" + upostag_output + "\t" + xpostag_output + "\t" + feats_output + "\t" + head_output + "\t" + deprel_output + "\t" + deps_output + "\t" +  misc_output);
-/*
-            throw new Error("Not Implemented");
-             */
         },
+
         set: function(arg) {
             //takes a string and sets this object's value to match the string.
 
             var fields = arg.split("\t");
-            //var token = new Token(); //TODO: Question: Is "this" already a token? (Or) Do we define a new Token variable?
 
             this.id = fields[0];
             if (this.id === "_")
@@ -127,8 +124,6 @@ Object.defineProperty(Token.prototype,'serial',
             this.misc = fields[9];
             if (this.misc === "_")
                 this.misc = undefined;
-
-            //return token; //TODO ?? Do we return "this" or do we return a new token?
         }
     }
 );

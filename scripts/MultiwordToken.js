@@ -46,45 +46,50 @@ Object.defineProperty(MultiwordToken.prototype,'id',{ //to prototype or not to p
         return String(id); //return in string version
     },
 
-    set: function(value) {
-        throw new Error("Ignoring attempt to set multi-word token id to " + value);
+    set: function(value) { // does nothing
     }
 });
 
 Object.defineProperty(MultiwordToken.prototype,'serial',{
     get: function() {
         var finalString = "";
+
+        // handle apostrophes in token forms
         var parentForm = this.form;
-        if (parentForm.includes("'")){ // changes "haven't" to "haven\'t", and similar words
+        if (parentForm.includes("'")){
             parentForm = parentForm.replace("'", "\'")
         }
 
         // Find the serial property from the Token object, and use that to serialize the MWT line
         var parentSerialGetter = Object.getOwnPropertyDescriptor(Token.prototype,'serial');
-        var headMWT = parentSerialGetter.get.call(this);
+        var parentMWT = parentSerialGetter.get.call(this);
 
-        finalString = finalString + headMWT; // add parent mwt to the final string
-        console.log ("Head multiword token: " + finalString);
+        finalString = finalString + parentMWT; // add parent mwt to the final string
+
         for (word in this.tokens){
-            finalString = finalString+this.tokens[word].serial+"\n"; // iteratively add each child to the final string.
+            finalString = finalString + "\n" + this.tokens[word].serial;// iteratively add each child to the final string.
         }
-        console.log ("Full MWToken: "+ finalString);
 
         return finalString;
-        /*
-        {mwt id, mwt form [
-        {ct id, ct form, etc}
-        {ct id, ct form, etc}
-        ]
-        }
-         */
-        // takes this multiword token object and returns a string
-        //throw new Error("Not Implemented");
     },
-    set: function() {
-        //takes a string and sets this multiword object's value to match the string.
-        throw new Error("Not Implemented");
-        //TODO: implement
+
+    set: function(mwtString) {
+        // Split the initial string into the separate lines as would be found in Conllu format
+        var mwtLines = mwtString.split("\n");
+
+        // First item in array (first line) turned into mwt "parent"
+        // Find the serial property from the Token object, and use that to serialize the MWT line
+        var parentSerialSetter = Object.getOwnPropertyDescriptor(Token.prototype,'serial');
+        parentSerialSetter.set.call(this, mwtLines[0]);
+
+        this.tokens = []; //ensure the subtokens array is clear
+
+        // Iterate over the subtokens and set them using the existing Token setter. Push them to subtokens array.
+        for (i = 1; i < mwtLines.length(); i++){
+            var subToken = new Token();
+            subToken.serial = mwtLines[i];
+            this.tokens.push(subToken);
+        }
     }
 });
 
