@@ -52,7 +52,13 @@ var TokenAggregate = function(token_array) {
             else if (this[token_array][x].id === token_id) {
                 var splitter = this[token_array][x];//find the splitter who is at the given token_id & assign to variable
                 var word = new Token(); // makes the new word an instance of Token
-                word.id = token_id;
+                // if (String(token_id).includes("-")) or
+                if (token_id.includes("-")){ // if the given token is a MWT parent (of the form "2-3")
+                    word.id = (splitter.tokens[tokens.length-1].id); // give the new word the index of the last sub-token (what about + 1 ??)
+                }
+                else { // if the given token is a normal token
+                    word.id = token_id; // why not +1?? Was like this already and seems to work...
+                }
                 word.form = splitter.form.slice(string_index);
                 splitter.form = splitter.form.slice(0, string_index);
                 this[token_array].splice((x + 1), 0, word);// inserts new word at the correct index in the array
