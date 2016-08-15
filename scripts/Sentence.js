@@ -118,6 +118,29 @@ Sentence.prototype = {
                 //if this.tokens[i] isn't an instance of a MultiwordToken, do nothing.
             }
         }
+    },
+    splitComment: function (comment_index, character_index) { //new comment line from splitting point
+        for (var i = 0; i < this.comments.length; i ++) {
+            if (i === comment_index) {
+                var newComment = this.comments[i].slice(character_index);
+                this.comments[i] = this.comments[i].slice(0, character_index)
+                this.comments.splice((i + 1), 0, newComment)
+                console.log(this.comments);
+            }
+        }
+    },
+
+    mergeComment: function (comment_index) { //removes comment at index 0 from comments array
+        if (comment_index === 0) {       //adds all other comments to preceding element in array
+            this.comments.splice(0, 1);
+        } else {
+            for (var i = 0; i < this.comments.length; i++) {
+                if (i === comment_index) {
+                    this.comments[i - 1] = this.comments[i - 1] + this.comments[i];
+                    this.comments.splice(i, 1);
+                }
+            }
+        }
     }
 };
 
@@ -159,8 +182,9 @@ Object.defineProperty(Sentence.prototype,'serial',
                     if (fields[0].includes("-")){
                         mwtString = lines[i] + "\n";
                         mwtId = fields[0];
-                        var first = Number(mwtId[0]);
-                        var last = Number(mwtId[2]);
+                        dashIndex = fields[0].indexOf("-");
+                        var first = Number(mwtId.slice(0, dashIndex)); //everything before/after slash
+                        var last = Number(mwtId.slice(dashIndex+1));
                         var span = [];
                         while(first <= last) {
                             span.push(Number(first++)); //get span of mwt ids to match all mwt subtoken ids
