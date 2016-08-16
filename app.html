@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="libs/ractive.min.js"></script>
+    <link href="styles/conllu.css" rel="stylesheet" />
+</head>
+<body>
+
+<section id="conllu_editor"></section>
+
+
+<script id="conllu" type="text/ractive">
+{{#each object.sentences:i}}
+    <div class="sentence">
+        <sentence object='{{object.sentences[i]}}'>
+    </div>
+{{/each}}
+<button on-click="download()">Download</button>
+</script>
+
+<script id="sentence" type="text/ractive">
+    <div class="comments">
+        {{#each object.comments:i}}
+            <span class="comment">
+            #<input value="{{object.comments[i]}}"
+                on-enter='splitComment:{{i}}'>
+            </span>
+        {{/each}}
+    </div>
+    <div class="tokens">
+        {{#each object.tokens}}
+            <span class="token">
+                {{>token}}
+                {{#if tokens}}
+                    <span class="tokens">
+                        {{#each tokens}}
+                            <span class="token">
+                                {{>token}}
+                            </span>
+                        {{/each}}
+                    </span>
+                {{/if}}
+            </span>
+        {{/each}}
+    </div>
+
+</script>
+
+<script id="multiwordtoken" type="text/ractive">
+
+</script>
+
+<script id="token" type="text/ractive">
+    <span class="id">{{id}}</span>
+    <input class="form" value="{{form}}"
+        on-enter='split:{{id}},{{form}}'
+        on-del='merge:{{id}}'
+        on-backspace='backmerge:{{id}}'
+        on-shiftenter='expand:{{id}}'
+        on-shiftdel='collapse:{{id}}'
+        on-shiftbackspace='collapse:{{id}}'
+        >
+    <input class="lemma" value="{{lemma}}">
+    <input class="upostag" value="{{upostag}}">
+    <input class="xpostag" value="{{xpostag}}">
+    <input class="feats" value="{{feats}}">
+    <input class="head" value="{{head}}">
+    <input class="deprel" value="{{deprel}}">
+    <input class="deps" value="{{deps}}">
+    <input class="misc" value="{{misc}}">
+
+</script>
+
+<script src="conllu_editor.js"></script>
+
+</body>
+</html>

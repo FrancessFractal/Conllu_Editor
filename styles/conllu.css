@@ -1,0 +1,26 @@
+
+.token input {
+    width:5em;
+    display: inline;
+}
+
+.comment input {
+    width:25em;
+}
+
+.sentence {
+    display: block;
+}
+
+.tokens, .comments {
+    display: block;
+}
+
+.tokens .token::before, .comments .comment::before, .sentence::before {
+    content: '\A';
+    white-space: pre;
+}
+
+.token, .comment {
+    display: inline;
+}
