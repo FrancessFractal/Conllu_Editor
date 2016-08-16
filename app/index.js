@@ -177,7 +177,7 @@ var sentence = Ractive.extend({
         for (var index in this.get('object').tokens) {
             this.set('object.tokens['+index+'].id',this.get('object').tokens[index].id);
             this.set('object.tokens['+index+'].form',this.get('object').tokens[index].form);
-            if(this.get('object').tokens.hasOwnProperty('tokens')) {
+            if(this.get('object').tokens[index].hasOwnProperty('tokens')) {
                 for (var index2 in this.get('object').tokens[index].tokens) {
                     this.set('object.tokens[' + index + '].tokens[' + index2 + '].id', this.get('object').tokens[index].tokens[index2].id);
                     this.set('object.tokens[' + index + '].tokens[' + index2 + '].form', this.get('object').tokens[index].tokens[index2].form);
