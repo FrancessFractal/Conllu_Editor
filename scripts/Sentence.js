@@ -125,7 +125,6 @@ Sentence.prototype = {
                 var newComment = this.comments[i].slice(character_index);
                 this.comments[i] = this.comments[i].slice(0, character_index)
                 this.comments.splice((i + 1), 0, newComment)
-                console.log(this.comments);
             }
         }
     },
