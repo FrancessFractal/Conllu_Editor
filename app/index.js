@@ -30,63 +30,33 @@ var updateTokens = function() {
     }
 };
 
+var tokenizer = new Tokenizer('text');
+
 var createConlluFromText = function (text) {
-    // TODO: implement instead of returning dummy object
-
+    tokenizer.setEntry(text)
+    textSentences = tokenizer.getSentences();
     var conllu = new Conllu();
-    conllu.sentences[1] = new Sentence();
-    conllu.sentences[1].comments[0] = "sent_id 2";
-    conllu.sentences[1].comments[1] = " ...";
-    conllu.sentences[1].tokens[0] = new Token();
-    conllu.sentences[1].tokens[0].id = 1;
-    conllu.sentences[1].tokens[0].form = "I";
-    conllu.sentences[1].tokens[1] = new MultiwordToken();
-    conllu.sentences[1].tokens[1].form = "haven't";
-    conllu.sentences[1].tokens[1].tokens[0] = new Token();
-    conllu.sentences[1].tokens[1].tokens[0].id = 2;
-    conllu.sentences[1].tokens[1].tokens[0].form = "have";
-    conllu.sentences[1].tokens[1].tokens[1] = new Token();
-    conllu.sentences[1].tokens[1].tokens[1].id = 3;
-    conllu.sentences[1].tokens[1].tokens[1].form = "n't";
-    conllu.sentences[1].tokens[2] = new Token();
-    conllu.sentences[1].tokens[2].id = 4;
-    conllu.sentences[1].tokens[2].form = "a";
-    conllu.sentences[1].tokens[3] = new Token();
-    conllu.sentences[1].tokens[3].id = 5;
-    conllu.sentences[1].tokens[3].form = "clue";
-    conllu.sentences[1].tokens[4] = new Token();
-    conllu.sentences[1].tokens[4].id = 6;
-    conllu.sentences[1].tokens[4].form = ".";
 
+    for (i = 0; i < textSentences.length; i++){
+        conllu.sentences[i] = new Sentence();
+        conllu.sentences[i].comments[0] = "sent_id " + Number(i+1);
+        var sentenceText = tokenizer.getTokens(i);
+        var sentenceTokens = []
+        for (j = 0; j < sentenceText.length; j++){
+            var addToken = new Token()
+            addToken.form = sentenceText[j];
+            addToken.id = j+1
+            sentenceTokens.push(addToken)
+        }
+        conllu.sentences[i].tokens = sentenceTokens
+    }
 
-
-    conllu.sentences[0] = new Sentence();
-    conllu.sentences[0].comments[0] = " sent_id 1";
-    conllu.sentences[0].comments[1] = " ...";
-    conllu.sentences[0].tokens[0] = new Token();
-    conllu.sentences[0].tokens[0].id = 1;
-    conllu.sentences[0].tokens[0].form = "They";
-    conllu.sentences[0].tokens[1] = new Token();
-    conllu.sentences[0].tokens[1].id = 2;
-    conllu.sentences[0].tokens[1].form = "buy";
-    conllu.sentences[0].tokens[2] = new Token();
-    conllu.sentences[0].tokens[2].id = 3;
-    conllu.sentences[0].tokens[2].form = "and";
-    conllu.sentences[0].tokens[3] = new Token();
-    conllu.sentences[0].tokens[3].id = 4;
-    conllu.sentences[0].tokens[3].form = "sell";
-    conllu.sentences[0].tokens[4] = new Token();
-    conllu.sentences[0].tokens[4].id = 5;
-    conllu.sentences[0].tokens[4].form = "books";
-    conllu.sentences[0].tokens[5] = new Token();
-    conllu.sentences[0].tokens[5].id = 6;
-    conllu.sentences[0].tokens[5].form = ".";
 
     return conllu;
 };
 
 
-var conllu_object = createConlluFromText("I haven't a clue. They buy and sell books.");
+var conllu_object = createConlluFromText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.");
 
 var sentence = Ractive.extend({
     template:'#sentence',
