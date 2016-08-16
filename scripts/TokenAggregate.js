@@ -55,7 +55,7 @@ var TokenAggregate = function(token_array) {
 
                 // updates new word's id
                 if (String(token_id).includes("-")){ // if the given token is a MWT parent (of the form "2-3")
-                    word.id = (splitter.tokens[tokens.length-1].id); // give the new word the index of the last sub-token (what about + 1 ??)
+                    word.id = (splitter.tokens[splitter.tokens.length-1].id); // give the new word the index of the last sub-token (what about + 1 ??)
                 }
                 else { // if the given token is a normal token
                     word.id = token_id; // why not +1?? Was like this already and seems to work...
