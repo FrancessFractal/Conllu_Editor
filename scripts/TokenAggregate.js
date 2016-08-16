@@ -54,7 +54,7 @@ var TokenAggregate = function(token_array) {
                 var word = new Token(); // makes the new word an instance of Token
 
                 // updates new word's id
-                if (token_id.includes("-")){ // if the given token is a MWT parent (of the form "2-3")
+                if (String(token_id).includes("-")){ // if the given token is a MWT parent (of the form "2-3")
                     word.id = (splitter.tokens[tokens.length-1].id); // give the new word the index of the last sub-token (what about + 1 ??)
                 }
                 else { // if the given token is a normal token
@@ -68,7 +68,6 @@ var TokenAggregate = function(token_array) {
 
                 found = true;
             }
-
         }
     };
 
