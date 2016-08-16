@@ -16,7 +16,7 @@ var Conllu = function() {
 Conllu.prototype = {
 
 
-    split : function (sentence_index, token_id) {
+    splitSentence : function (sentence_index, token_id) {
 
         for (var i = 0; i < this.sentences.length; i++) {
 
@@ -28,7 +28,6 @@ Conllu.prototype = {
                 for (var j = token_id; j < this.sentences[i].tokens.length; j++) {
                     if (!(this.sentences[i].tokens[j] instanceof MultiwordToken)) {
                         newSentence.tokens.push(this.sentences[i].tokens[j]);
-                        console.log(newSentence.tokens[currentId])
                         newSentence.tokens[currentId].id = newId;
                         newId = newId + 1;
                         currentId = currentId + 1;
@@ -43,21 +42,49 @@ Conllu.prototype = {
                         currentId = currentId + 1
                     }
                 }
-                console.log(removeIds);
                 for (var h = removeIds.length-1; h >= 0; h--) {
                     var id = removeIds[h];
                     this.sentences[i].tokens.splice(id,1);
                 }
             }
-
-
         }
         this.sentences.splice(sentence_index+1, 0, newSentence);
-    }
-    //merge : function (sentence_index) {
+    },
 
-    //}
-},
+
+    mergeSentence : function (sentence_index) {
+        var sentence = this.sentences[sentence_index];
+
+        // remove each token from the next sentence and push it to the previous sentence
+        while (this.sentences[sentence_index + 1].tokens[0] !== undefined){ // when the first item of the second sentence is not a token, iteration must end
+            var current = this.sentences[sentence_index+1].tokens.shift();
+            this.sentences[sentence_index].tokens.push(current);
+        }
+
+        // remove the old sentence object
+        this.sentences.splice(sentence_index+1, 1);
+
+        // update token id's and multiword token id's from 1 till end of merged sentence
+        var id = 0;
+        for (var x in this.sentences[sentence_index].tokens){
+            var word = this.sentences[sentence_index].tokens[x];
+
+            //if the token is a normal Token
+            if (!(word instanceof MultiwordToken)){
+                id++;
+                word.id = id;
+            }
+
+            //if the token is a multi word token
+            else {
+                for (var subtoken in word.tokens){
+                    id++;
+                    word.tokens[subtoken].id = id;
+                }
+            }
+        }
+    }
+};
 
 
 
