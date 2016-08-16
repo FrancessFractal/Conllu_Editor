@@ -17,8 +17,9 @@ input [type = "text/ractive"] {
 }
 
 .comment input {
-    margin-left: 2em;
+    margin-left: 3em;
     width:25em;
+    margin-bottom: 20px;
 }
 
 .sentence {
@@ -26,7 +27,6 @@ input [type = "text/ractive"] {
     display: block;
 }
 .token {
-    margin-bottom: 5px;
 }
 
 .tokens, .comments {
@@ -35,7 +35,7 @@ input [type = "text/ractive"] {
 
 .tokens span {
     position: relative;
-    min-width: 2em;
+    min-width: 3em;
     color: #9e9e9e;
 }
 
@@ -44,12 +44,10 @@ input [type = "text/ractive"] {
 }
 
 .tokens .token::before, .comments .comment::before, .sentence::before {
-    content: '\A';
-    white-space: pre;
 }
 
 .token, .comment {
-    display: inline;
+    display: block;
 }
 
 button {
