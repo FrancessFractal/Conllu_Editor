@@ -38,7 +38,7 @@
             {{#if tokens}}
                 <multiwordtoken object='{{.}}'/>
             {{else}}
-                {{>token}}
+                <token object='{{.}}' />
             {{/if}}
         {{/each}}
     </div>
@@ -65,7 +65,7 @@
         <input class="misc" value="{{object.misc}}">
         <span class="tokens">
             {{#each object.tokens}}
-                {{>token}}
+                <token object='{{.}}' />
             {{/each}}
         </span>
     </span>
@@ -74,21 +74,21 @@
 
 <script id="token" type="text/ractive">
     <span class="token">
-        <span class="id">{{id}}</span>
-        <input class="form" value="{{form}}"
-            on-enter='split:{{id}},{{form}}'
-            on-del='merge:{{id}}'
-            on-backspace='backmerge:{{id}}'
-            on-shiftenter='expand:{{id}}'
+        <span class="id">{{object.id}}</span>
+        <input class="form" value="{{object.form}}"
+            on-enter='split:{{object.id}},{{object.form}}'
+            on-del='merge:{{object.id}}'
+            on-backspace='backmerge:{{object.id}}'
+            on-shiftenter='expand:{{object.id}}'
             >
-        <input class="lemma" value="{{lemma}}">
-        <input class="upostag" value="{{upostag}}">
-        <input class="xpostag" value="{{xpostag}}">
-        <input class="feats" value="{{feats}}">
-        <input class="head" value="{{head}}">
-        <input class="deprel" value="{{deprel}}">
-        <input class="deps" value="{{deps}}">
-        <input class="misc" value="{{misc}}">
+        <input class="lemma" value="{{object.lemma}}">
+        <input class="upostag" value="{{object.upostag}}">
+        <input class="xpostag" value="{{object.xpostag}}">
+        <input class="feats" value="{{object.feats}}">
+        <input class="head" value="{{object.head}}">
+        <input class="deprel" value="{{object.deprel}}">
+        <input class="deps" value="{{object.deps}}">
+        <input class="misc" value="{{object.misc}}">
     </span>
 
 </script>
