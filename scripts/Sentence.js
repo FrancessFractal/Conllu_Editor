@@ -130,17 +130,11 @@ Sentence.prototype = {
     },
 
     mergeComment: function (comment_index) { //removes comment at index 0 from comments array
-        if (comment_index === 0) {       //adds all other comments to preceding element in array
-            this.comments.splice(0, 1);
-        } else {
-            for (var i = 0; i < this.comments.length; i++) {
-                if (i === comment_index) {
-                    this.comments[i - 1] = this.comments[i - 1] + this.comments[i];
-                    this.comments.splice(i, 1);
-                }
-            }
-        }
+        this.comments[comment_index] = this.comments[comment_index] + this.comments[comment_index+1];
+        this.comments.splice(comment_index+1, 1);
+
     }
+
 };
 
 Object.defineProperty(Sentence.prototype,'serial',
