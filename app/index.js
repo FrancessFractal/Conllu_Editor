@@ -49,7 +49,7 @@ var createConlluFromText = function (text) {
 
 var conllu_object = createConlluFromText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.");
 
-var conllu_object = createConlluFromText("I haven't a clue. They buy and sell books.");
+// var conllu_object = createConlluFromText("I haven't a clue. They buy and sell books.");
 
 var token = Ractive.extend({
     template: '#token',
@@ -204,6 +204,23 @@ var subtoken = Ractive.extend({
             this.parent.get('object').expand(this.get('object').id,event.caretPosition);
             this.parent.updateModel();
         });
+
+        this.on('downarrow', function (event){
+            var nextToken = event.node.parentNode.nextSibling.childNodes[2];
+            nextToken.focus();
+            nextToken.setSelectionRange(event.caretPosition, event.caretPosition);
+        });
+        this.on('leftarrow', function (event){
+            console.log("leftarrow function");
+        });
+        this.on('rightarrow', function (event){
+            console.log("rightarrow function");
+        });
+        this.on('uparrow', function (event){
+            var nextToken = event.node.parentNode.previousSibling.childNodes[2];
+            nextToken.focus();
+            nextToken.setSelectionRange(event.caretPosition, event.caretPosition);
+        });
     },
     data: function () {
         return {
@@ -278,6 +295,24 @@ var multiwordtoken = Ractive.extend({
             console.log('collapse('+token+')');
             this.parent.get('object').collapse(token);
             this.parent.updateModel();
+        });
+
+        this.on('downarrow', function (event){
+            console.log(event.node.parentNode.childNodes[20])
+            var nextToken = event.node.parentNode.childNodes[20].childNodes[0].childNodes[2];
+            nextToken.focus();
+            nextToken.setSelectionRange(event.caretPosition, event.caretPosition);
+        });
+        this.on('leftarrow', function (event){
+            console.log("leftarrow function");
+        });
+        this.on('rightarrow', function (event){
+            console.log("rightarrow function");
+        });
+        this.on('uparrow', function (event){
+            var nextToken = event.node.parentNode.previousSibling.childNodes[2];
+            nextToken.focus();
+            nextToken.setSelectionRange(event.caretPosition, event.caretPosition);
         });
     },
     data: function () {

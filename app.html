@@ -54,6 +54,10 @@
             on-backspace='backmerge:{{object.id}}'
             on-shiftdel='collapse:{{object.id}}'
             on-shiftbackspace='collapse:{{object.id}}'
+            on-downarrow='downarrow'
+            on-leftarrow='leftarrow'
+            on-rightarrow='rightarrow'
+            on-uparrow='uparrow'
             >
         <input class="lemma" value="{{object.lemma}}">
         <input class="upostag" value="{{object.upostag}}">
@@ -104,6 +108,10 @@
             on-enter='split:{{object.id}},{{object.form}}'
             on-del='merge:{{object.id}}'
             on-backspace='backmerge:{{object.id}}'
+            on-downarrow='downarrow'
+            on-leftarrow='leftarrow'
+            on-rightarrow='rightarrow'
+            on-uparrow='uparrow'
             >
         <input class="lemma" value="{{object.lemma}}">
         <input class="upostag" value="{{object.upostag}}">
