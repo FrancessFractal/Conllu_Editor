@@ -16,7 +16,7 @@
 <script id="conllu" type="text/ractive">
 {{#each object.sentences:i}}
     <div class="sentence">
-        <sentence object='{{object.sentences[i]}}'>
+        <sentence object='{{.}}'/>
     </div>
 {{/each}}
 <button on-click="download()">Download</button>
@@ -35,45 +35,61 @@
     </div>
     <div class="tokens">
         {{#each object.tokens}}
-            <span class="token">
+            {{#if tokens}}
+                <multiwordtoken object='{{.}}'/>
+            {{else}}
                 {{>token}}
-                {{#if tokens}}
-                    <span class="tokens">
-                        {{#each tokens}}
-                            <span class="token">
-                                {{>token}}
-                            </span>
-                        {{/each}}
-                    </span>
-                {{/if}}
-            </span>
+            {{/if}}
         {{/each}}
     </div>
 
 </script>
 
 <script id="multiwordtoken" type="text/ractive">
+    <span class="token multiwordtoken">
+        <span class="id">{{object.id}}</span>
+        <input class="form" value="{{object.form}}"
+            on-enter='split:{{object.id}},{{object.form}}'
+            on-del='merge:{{object.id}}'
+            on-backspace='backmerge:{{object.id}}'
+            on-shiftdel='collapse:{{object.id}}'
+            on-shiftbackspace='collapse:{{object.id}}'
+            >
+        <input class="lemma" value="{{object.lemma}}">
+        <input class="upostag" value="{{object.upostag}}">
+        <input class="xpostag" value="{{object.xpostag}}">
+        <input class="feats" value="{{object.feats}}">
+        <input class="head" value="{{object.head}}">
+        <input class="deprel" value="{{object.deprel}}">
+        <input class="deps" value="{{object.deps}}">
+        <input class="misc" value="{{object.misc}}">
+        <span class="tokens">
+            {{#each object.tokens}}
+                {{>token}}
+            {{/each}}
+        </span>
+    </span>
 
 </script>
 
 <script id="token" type="text/ractive">
-    <span class="id">{{id}}</span>
-    <input class="form" value="{{form}}"
-        on-enter='split:{{id}},{{form}}'
-        on-del='merge:{{id}}'
-        on-backspace='backmerge:{{id}}'
-        on-shiftenter='expand:{{id}}'
-        on-shiftdel='collapse:{{id}}'
-        on-shiftbackspace='collapse:{{id}}'
-        >
-    <input class="lemma" value="{{lemma}}">
-    <input class="upostag" value="{{upostag}}">
-    <input class="xpostag" value="{{xpostag}}">
-    <input class="feats" value="{{feats}}">
-    <input class="head" value="{{head}}">
-    <input class="deprel" value="{{deprel}}">
-    <input class="deps" value="{{deps}}">
-    <input class="misc" value="{{misc}}">
+    <span class="token">
+        <span class="id">{{id}}</span>
+        <input class="form" value="{{form}}"
+            on-enter='split:{{id}},{{form}}'
+            on-del='merge:{{id}}'
+            on-backspace='backmerge:{{id}}'
+            on-shiftenter='expand:{{id}}'
+            >
+        <input class="lemma" value="{{lemma}}">
+        <input class="upostag" value="{{upostag}}">
+        <input class="xpostag" value="{{xpostag}}">
+        <input class="feats" value="{{feats}}">
+        <input class="head" value="{{head}}">
+        <input class="deprel" value="{{deprel}}">
+        <input class="deps" value="{{deps}}">
+        <input class="misc" value="{{misc}}">
+    </span>
 
 </script>
 
