@@ -119,6 +119,79 @@ var token = Ractive.extend({
 });
 Ractive.components.token = token;
 
+var subtoken = Ractive.extend({
+    template: '#token',
+    isolated: true,
+    oninit: function () {
+        this.on('split', function (event) {
+
+            // call split(token_id, index)
+            console.log('split('+this.get('object').id+','+event.caretPosition+')');
+            this.parent.parent.get('object').split(this.get('object').id, event.caretPosition);
+
+            // refresh the model
+            this.parent.parent.updateModel();
+
+            // place the caret
+            var nextForm = event.node.parentNode.nextSibling.childNodes[2];
+            nextForm.focus();
+            nextForm.setSelectionRange(0,0);
+        });
+
+        this.on('merge', function (event) {
+            if(event.caretPosition===event.textLength) {
+
+                // call merge(token_id)
+                console.log("merge("+this.get('object').id+")");
+                this.parent.parent.get('object').merge(this.get('object').id);
+
+                // refresh the model
+                this.parent.parent.updateModel();
+
+                //place the caret
+                event.node.setSelectionRange(event.caretPosition,event.caretPosition);
+            }
+        });
+
+        this.on('backmerge', function (event) {
+            if(event.caretPosition===0) {
+                // find the token before the current token
+                var previousToken = event.node.parentNode.previousSibling;
+                var previousForm = previousToken.childNodes[2].value;
+                var previousId = previousToken.childNodes[0].textContent;
+
+                // if the id is a number, convert it to a number
+                if( !isNaN(+previousId )) {
+                    previousId = +previousId;
+                }
+
+                // call merge(previous_token_id)
+                console.log("merge("+previousId+")");
+                this.parent.parent.get('object').merge(previousId);
+
+                // refresh the model
+                this.parent.parent.updateModel();
+
+                // place the caret
+                previousToken.childNodes[2].focus();
+                previousToken.childNodes[2].setSelectionRange(previousForm.length,previousForm.length);
+            }
+        });
+
+        this.on('expand', function (event) {
+            console.log('expand('+this.get('object').id+','+event.caretPosition+')');
+            this.parent.get('object').expand(this.get('object').id,event.caretPosition);
+            this.parent.updateModel();
+        });
+    },
+    data: function () {
+        return {
+            object: new Token()
+        }
+    }
+});
+Ractive.components.subtoken = subtoken;
+
 var multiwordtoken = Ractive.extend({
     template: '#multiwordtoken',
     isolated: true,
@@ -192,7 +265,7 @@ var multiwordtoken = Ractive.extend({
         }
     },
     components: {
-        token: token
+        subtoken: subtoken
     },
     // Ractive's updateModel appears to have a bug in it. Until they fix it, we override their function with this
     updateModel: function() {

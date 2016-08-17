@@ -67,6 +67,15 @@ var TokenAggregate = function(token_array) {
                 this[token_array].splice((x + 1), 0, word);// inserts new word at the correct index in the array
 
                 found = true;
+            } else {
+                var MultiwordToken = require("../scripts/MultiwordToken.js").MultiwordToken; //TODO: figure out how to move this
+                if (this[token_array][x] instanceof MultiwordToken) {
+                    var prev_length = this[token_array][x].tokens.length;
+                    this[token_array][x].split(token_id, string_index);
+                    if(prev_length !== this[token_array][x].tokens.length) {
+                        found = true;
+                    }
+                }
             }
         }
     };
@@ -100,6 +109,15 @@ var TokenAggregate = function(token_array) {
                 merger.form = merger.form + gone.form;
                 this[token_array].splice((Number(x) + 1), 1);
                 found = true;
+            }else {
+                var MultiwordToken = require("../scripts/MultiwordToken.js").MultiwordToken; //TODO: figure out how to move this
+                if (this[token_array][x] instanceof MultiwordToken) {
+                    var prev_length = this[token_array][x].tokens.length;
+                    this[token_array][x].merge(token_id);
+                    if(prev_length !== this[token_array][x].tokens.length) {
+                        found = true;
+                    }
+                }
             }
         }
     };

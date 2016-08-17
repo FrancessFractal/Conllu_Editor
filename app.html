@@ -65,7 +65,7 @@
         <input class="misc" value="{{object.misc}}">
         <span class="tokens">
             {{#each object.tokens}}
-                <token object='{{.}}' />
+                <subtoken object='{{.}}' />
             {{/each}}
         </span>
     </span>
@@ -80,6 +80,26 @@
             on-del='merge:{{object.id}}'
             on-backspace='backmerge:{{object.id}}'
             on-shiftenter='expand:{{object.id}}'
+            >
+        <input class="lemma" value="{{object.lemma}}">
+        <input class="upostag" value="{{object.upostag}}">
+        <input class="xpostag" value="{{object.xpostag}}">
+        <input class="feats" value="{{object.feats}}">
+        <input class="head" value="{{object.head}}">
+        <input class="deprel" value="{{object.deprel}}">
+        <input class="deps" value="{{object.deps}}">
+        <input class="misc" value="{{object.misc}}">
+    </span>
+
+</script>
+
+<script id="subtoken" type="text/ractive">
+    <span class="token">
+        <span class="id">{{object.id}}</span>
+        <input class="form" value="{{object.form}}"
+            on-enter='split:{{object.id}},{{object.form}}'
+            on-del='merge:{{object.id}}'
+            on-backspace='backmerge:{{object.id}}'
             >
         <input class="lemma" value="{{object.lemma}}">
         <input class="upostag" value="{{object.upostag}}">
