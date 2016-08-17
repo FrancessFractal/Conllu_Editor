@@ -11,6 +11,11 @@ Ractive.events.del = events.del;
 Ractive.events.shiftdel = events.shiftdel;
 Ractive.events.backspace = events.backspace;
 Ractive.events.shiftbackspace = events.shiftbackspace;
+Ractive.events.downarrow = events.downarrow;
+Ractive.events.leftarrow = events.leftarrow;
+Ractive.events.rightarrow = events.rightarrow;
+Ractive.events.uparrow = events.uparrow;
+
 
 var Tokenizer = require('sentence-tokenizer');
 
@@ -109,6 +114,22 @@ var token = Ractive.extend({
             console.log('expand('+this.get('object').id+','+event.caretPosition+')');
             this.parent.get('object').expand(this.get('object').id,event.caretPosition);
             this.parent.updateModel();
+        });
+        this.on('downarrow', function (event){
+            var nextToken = event.node.parentNode.nextSibling.childNodes[2];
+            nextToken.focus();
+            nextToken.setSelectionRange(event.caretPosition, event.caretPosition);
+        });
+        this.on('leftarrow', function (event){
+            console.log("leftarrow function");
+        });
+        this.on('rightarrow', function (event){
+            console.log("rightarrow function");
+        });
+        this.on('uparrow', function (event){
+            var nextToken = event.node.parentNode.previousSibling.childNodes[2];
+            nextToken.focus();
+            nextToken.setSelectionRange(event.caretPosition, event.caretPosition);
         });
     },
     data: function () {

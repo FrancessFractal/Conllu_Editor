@@ -138,6 +138,84 @@ shiftbackspace = function ( node, fire ) {
     };
 };
 
+downarrow = function ( node, fire ) {
+
+    var downarrowHandler = function ( event ) {
+        // If we are currently in a text box and have hit shift+backspace
+        if(document.activeElement.type === 'text'
+            && event.key === 'ArrowDown'
+        ){
+            event.preventDefault();
+            fire(textFire(node, event));
+        }
+    };
+
+    node.addEventListener( 'keydown', downarrowHandler );
+    return {
+        teardown: function () {
+            node.removeEventListener( 'keydown', downarrowHandler );
+        }
+    };
+};
+leftarrow = function ( node, fire ) {
+
+    var leftarrowHandler = function ( event ) {
+        // If we are currently in a text box and have hit shift+backspace
+        if(document.activeElement.type === 'text'
+            && event.key === 'LeftDown'
+        ){
+            event.preventDefault();
+            fire(textFire(node, event));
+        }
+    };
+
+    node.addEventListener( 'keydown', leftarrowHandler );
+    return {
+        teardown: function () {
+            node.removeEventListener( 'keydown', leftarrowHandler );
+        }
+    };
+};
+
+rightarrow = function ( node, fire ) {
+
+    var rightarrowHandler = function ( event ) {
+        // If we are currently in a text box and have hit shift+backspace
+        if(document.activeElement.type === 'text'
+            && event.key === 'RightDown'
+        ){
+            event.preventDefault();
+            fire(textFire(node, event));
+        }
+    };
+
+    node.addEventListener( 'keydown', rightarrowHandler );
+    return {
+        teardown: function () {
+            node.removeEventListener( 'keydown', rightarrowHandler );
+        }
+    };
+};
+
+uparrow = function ( node, fire ) {
+
+    var uparrowHandler = function ( event ) {
+        // If we are currently in a text box and have hit shift+backspace
+        if(document.activeElement.type === 'text'
+            && event.key === 'ArrowUp'
+        ){
+            event.preventDefault();
+            fire(textFire(node, event));
+        }
+    };
+
+    node.addEventListener( 'keydown', uparrowHandler );
+    return {
+        teardown: function () {
+            node.removeEventListener( 'keydown', uparrowHandler );
+        }
+    };
+};
 
 // if using Node.js export module
 if (typeof exports !== 'undefined' && this.exports !== exports) {
@@ -147,4 +225,8 @@ if (typeof exports !== 'undefined' && this.exports !== exports) {
     exports.shiftdel = shiftdel;
     exports.backspace = backspace;
     exports.shiftbackspace = shiftbackspace;
+    exports.downarrow = downarrow;
+    exports.leftarrow = leftarrow;
+    exports.rightarrow = rightarrow;
+    exports.uparrow = uparrow;
 }
