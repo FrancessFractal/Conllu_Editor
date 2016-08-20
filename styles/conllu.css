@@ -2,6 +2,11 @@ body, input, button {
     font-family: Courier;
     font-size: 12px;
 }
+
+h1 {
+    font-size: 2em;
+}
+
 input [type = "text/ractive"] {
     font-family: Courier, monospace;
 }

@@ -1,0 +1,7 @@
+<h1 contenteditable="true" value="{{filename}}"></h1>
+{{#each object.sentences:i}}
+    <div class="sentence">
+        <sentence object='{{.}}'/>
+    </div>
+{{/each}}
+<button on-click="download()">Download</button>

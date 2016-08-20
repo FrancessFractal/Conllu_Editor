@@ -1,0 +1,20 @@
+<span class="token">
+    <span class="id">{{object.id}}</span>
+    <input class="form" value="{{object.form}}"
+           on-enter='split:{{object.id}},{{object.form}}'
+           on-del='merge:{{object.id}}'
+           on-backspace='backmerge:{{object.id}}'
+           on-downarrow='downarrow'
+           on-leftarrow='leftarrow'
+           on-rightarrow='rightarrow'
+           on-uparrow='uparrow'
+    >
+    <input class="lemma" value="{{object.lemma}}">
+    <input class="upostag" value="{{object.upostag}}">
+    <input class="xpostag" value="{{object.xpostag}}">
+    <input class="feats" value="{{object.feats}}">
+    <input class="head" value="{{object.head}}">
+    <input class="deprel" value="{{object.deprel}}">
+    <input class="deps" value="{{object.deps}}">
+    <input class="misc" value="{{object.misc}}">
+</span>

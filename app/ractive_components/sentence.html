@@ -1,0 +1,19 @@
+<div class="comments">
+    {{#each object.comments:i}}
+    <span class="comment">
+            #<input value="{{.}}"
+            on-enter='splitComment:{{i}}'
+            on-del='mergeComment:{{i}}'
+            on-backspace='backmergeComment:{{i}}'>
+    </span>
+    {{/each}}
+</div>
+<div class="tokens">
+    {{#each object.tokens}}
+    {{#if tokens}}
+    <multiwordtoken object='{{.}}'/>
+    {{else}}
+    <token object='{{.}}' />
+    {{/if}}
+    {{/each}}
+</div>
