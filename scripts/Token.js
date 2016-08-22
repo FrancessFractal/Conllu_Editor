@@ -85,7 +85,7 @@ Object.defineProperty(Token.prototype,'serial',
 
             var fields = arg.split("\t");
 
-            this.id = fields[0];
+            this.id = Number(fields[0]);
             if (this.id === "_")
                 this.id = undefined;
 
