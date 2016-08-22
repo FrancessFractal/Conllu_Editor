@@ -53,16 +53,9 @@ var conllu_object = createConlluFromText("Lorem ipsum dolor sit amet, consectetu
 
 // var conllu_object = createConlluFromText("I haven't a clue. They buy and sell books.");
 
-// var conllu = require('./ractive_components/conllu.js').conllu;
+var Conllu_Editor = require('./ractive_components/file_open.js');
 
-var app = new Ractive({
-    el: '#conllu_editor',
-    template: '<conllu object="{{this.conllu}}"/>',
-    data: {
-        conllu: new Conllu()
-    },
-    components: {
-        conllu: require('./ractive_components/conllu.js')
-    }
-});
-app.set('conllu',conllu_object);
+var app = new Conllu_Editor({
+    el: '#conllu_editor'
+})
+// app.set('conllu',conllu_object);
