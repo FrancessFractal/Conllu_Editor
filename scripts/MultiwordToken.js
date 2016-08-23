@@ -85,7 +85,7 @@ Object.defineProperty(MultiwordToken.prototype,'serial',{
         this.tokens = []; //ensure the subtokens array is clear
 
         // Iterate over the subtokens and set them using the existing Token setter. Push them to subtokens array.
-        for (i = 1; i < mwtLines.length(); i++){
+        for (i = 1; i < mwtLines.length; i++){
             var subToken = new Token();
             subToken.serial = mwtLines[i];
             this.tokens.push(subToken);
