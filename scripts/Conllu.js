@@ -1,6 +1,7 @@
 // if using Node.js export module
 if (typeof exports !== 'undefined' && this.exports !== exports) {
     var Sentence = require("../scripts/Sentence.js").Sentence;
+    var MultiwordToken = require("../scripts/MultiwordToken.js").MultiwordToken;
 }
 /**
  * Conllu
@@ -111,22 +112,21 @@ Object.defineProperty(Conllu.prototype,'serial',
 
         },
         set: function(arg) {
-            var lines = arg.split("\n");
-            var sent = [];
+            var lines = arg.split("\n"); //splits input text on newline
+            var sent = []; //creates dummy sentence array
 
             for (var i = 0; i < lines.length; i ++){
-                if (lines[i] === ""){
-                    sent.push(lines[i]);
-                    var sentCat = sent.join("\n");
-                    setSentence = new Sentence();
-                    setSentence.serial = sentCat;
-                    this.sentences.push(setSentence);
+                if (lines[i] === ""){ //flags empty lines as end of sentence
+                    sent.push(lines[i]); //add empty line to dummy sentence array
+                    var sentCat = sent.join("\n"); //join dummy sentence array on newline
+                    var setSentence = new Sentence();
+                    setSentence.serial = sentCat; //set sentence serial property to joined dummy sentence
+                    this.sentences.push(setSentence); //add this sentence to conllu sentences array
                     sent = []
                 } else {
-                    sent.push(lines[i]);
+                    sent.push(lines[i]); //adds all lines before empty line to dummy sentence array
                 }
             }
-            return sent
         }
 
     }
