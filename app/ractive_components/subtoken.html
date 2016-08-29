@@ -2,8 +2,8 @@
     <span class="id">{{object.id}}</span>
     <input class="form" value="{{object.form}}"
            on-enter='split:{{object.id}},{{object.form}}'
-           on-del='merge:{{object.id}}'
-           on-backspace='backmerge:{{object.id}}'
+           on-forwarddel='merge:{{object.id}}'
+           on-backbackspace='backmerge:{{object.id}}'
            on-downarrow='downarrow'
            on-leftarrow='leftarrow'
            on-rightarrow='rightarrow'

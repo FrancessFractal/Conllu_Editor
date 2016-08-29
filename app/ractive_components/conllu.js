@@ -13,6 +13,12 @@ module.exports = Ractive.extend({
     components: {
         sentence: require('./sentence.js')
     },
+    updateModel: function () {
+        this.findAllComponents().forEach(function (sentence) {
+            sentence.updateModel();
+        });
+    },
+
     download: function () {
         var blob = new Blob([this.get('object').serial],{type: 'text/plain'});
         var path = window.URL.createObjectURL(blob);

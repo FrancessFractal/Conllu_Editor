@@ -1,10 +1,15 @@
 <div class="comments">
+    {{^object.comments}}
+        <span class="nocomment">
+            <input placeholder="no comments">
+        </span>
+    {{/}}
     {{#each object.comments:i}}
     <span class="comment">
             #<input value="{{.}}"
             on-enter='splitComment:{{i}}'
-            on-del='mergeComment:{{i}}'
-            on-backspace='backmergeComment:{{i}}'>
+            on-forwarddel='mergeComment:{{i}}'
+            on-backbackspace='backmergeComment:{{i}}'>
     </span>
     {{/each}}
 </div>

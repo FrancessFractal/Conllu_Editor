@@ -81,6 +81,53 @@ module.exports = Ractive.extend({
             nextToken.focus();
             nextToken.setSelectionRange(event.caretPosition, event.caretPosition);
         });
+
+        this.on('splitsentence', function (event) {
+            var sent = this.parent.get('object');
+            var con = this.parent.parent.get('object');
+            var sent_index = con.sentences.indexOf(sent);
+            var token_id = this.get('object').id;
+
+            // If we are at the end of the text box, the current token goes in the next sentence
+            if(event.caretPosition===event.textLength) {
+                console.log('splitSentence('+sent_index+','+token_id+')');
+                con.splitSentence(sent_index, token_id);
+            } else {
+                console.log('splitSentence('+sent_index+','+(token_id-1)+')');
+                con.splitSentence(sent_index, token_id-1);
+            }
+
+            this.parent.parent.updateModel();
+
+            // TODO: place caret
+        });
+
+        this.on('mergesentence', function () {
+            var sent = this.parent.get('object');
+            var con = this.parent.parent.get('object');
+            var sent_index = con.sentences.indexOf(sent);
+            var token_index = sent.tokens.indexOf(this.get('object'));
+            if(token_index === sent.tokens.length - 1) {
+                console.log('mergeSentence('+(sent_index)+')');
+                con.mergeSentence(sent_index);
+
+                this.parent.parent.updateModel();
+            }
+        });
+
+        this.on('backmergesentence', function () {
+            var sent = this.parent.get('object');
+            var con = this.parent.parent.get('object');
+            var sent_index = con.sentences.indexOf(sent);
+            var token_index = sent.tokens.indexOf(this.get('object'));
+            if(token_index === 0) {
+                console.log('mergeSentence('+(sent_index-1)+')');
+                con.mergeSentence(sent_index-1);
+
+                this.parent.parent.updateModel();
+            }
+
+        });
     },
     data: function () {
         return {

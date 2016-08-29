@@ -3,8 +3,8 @@
     <span class="id">{{object.id}}</span>
     <input class="form" value="{{object.form}}"
            on-enter='split:{{object.id}},{{object.form}}'
-           on-del='merge:{{object.id}}'
-           on-backspace='backmerge:{{object.id}}'
+           on-forwarddel='merge:{{object.id}}'
+           on-backbackspace='backmerge:{{object.id}}'
            on-shiftdel='collapse:{{object.id}}'
            on-shiftbackspace='collapse:{{object.id}}'
            on-downarrow='downarrow'

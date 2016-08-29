@@ -1,14 +1,19 @@
 <span class="token">
     <span class="id">{{object.id}}</span>
     <input class="form" value="{{object.form}}"
-           on-enter='split:{{object.id}},{{object.form}}'
-           on-del='merge:{{object.id}}'
-           on-backspace='backmerge:{{object.id}}'
-           on-shiftenter='expand:{{object.id}}'
-           on-downarrow='downarrow'
-           on-leftarrow='leftarrow'
-           on-rightarrow='rightarrow'
-           on-uparrow='uparrow'
+        on-enter="split"
+        on-forwarddel="merge"
+        on-backbackspace="backmerge"
+        on-shiftenter="expand"
+        on-spaceenter="splitsentence"
+        on-spacedel="mergesentence"
+        on-spacebackspace="backmergesentence"
+        {{! This just forces the event handler to check for spaces. Event handler prevents default  }}
+        on-space="(function() {})()"
+        on-downarrow="downarrow"
+        on-leftarrow="leftarrow"
+        on-rightarrow="rightarrow"
+        on-uparrow="uparrow"
     >
     <input class="lemma" value="{{object.lemma}}">
     <input class="upostag" value="{{object.upostag}}">
