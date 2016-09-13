@@ -1,6 +1,11 @@
 {{#conllu}}
+<div class="editor">
 <conllu object="{{.}}"/>
+</div>
 {{else}}
+<div class="upload-section">
+<h3>Upload conllu file or insert text below</h3>
 <fileopen />
 <tokenizetext />
+</div>
 {{/}}
