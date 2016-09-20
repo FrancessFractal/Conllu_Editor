@@ -1,7 +1,7 @@
 <div class="comments">
     {{^object.comments}}
         <span class="nocomment">
-            <input placeholder="no comments">
+            <input placeholder="no comments" value="{{comment}}">
         </span>
     {{/}}
     {{#each object.comments:i}}

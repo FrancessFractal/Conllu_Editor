@@ -6,6 +6,15 @@ module.exports = Ractive.extend({
     isolated: true,
     oninit: function () {
 
+        this.observe( 'comment', function (newValue, oldValue, keypath) {
+            if (newValue !== '') {
+                this.set('object.comments',[newValue]);
+                var firstComment = this.el.getElementsByClassName('comments')[0].getElementsByClassName('comment')[0];
+                firstComment.children[0].focus();
+                firstComment.children[0].setSelectionRange(1,1);
+            }
+        });
+
         this.on('splitComment', function (event, index) {
 
             // call split(token_id, index)
@@ -37,25 +46,40 @@ module.exports = Ractive.extend({
 
         this.on('backmergeComment', function (event, index) {
             if(event.caretPosition===0) {
-                var previousForm = event.node.parentNode.previousSibling.childNodes[1];
-                var newCaretIndex = previousForm.value.length;
+                // handle comment deletes when backmerging the only comment in the sentence
+                if (this.get('object').comments.length === 1) {
+                    this.set('comment', '');
+                    this.get('object.comments').pop();
 
-                // call merge(previous_token_id)
-                console.log("mergeComment("+(index-1)+")");
-                this.get('object').mergeComment(index-1);
+                    // nocomment is going to be the input element for the nocomment box
+                    var nocomment = this.el.getElementsByClassName('comments')[0].getElementsByClassName('nocomment')[0];
+                    nocomment = nocomment.children[0];
 
-                // refresh the model
-                this.updateModel();
+                    nocomment.focus();
+                    nocomment.setSelectionRange(0,0)
+                }
+                else { // handle regular backmerges
+                    var previousForm = event.node.parentNode.previousSibling.childNodes[1];
+                    var newCaretIndex = previousForm.value.length;
 
-                // place the caret
-                previousForm.focus();
-                previousForm.setSelectionRange(newCaretIndex,newCaretIndex);
+                    // call merge(previous_token_id)
+                    console.log("mergeComment(" + (index - 1) + ")");
+                    this.get('object').mergeComment(index - 1);
+
+                    // refresh the model
+                    this.updateModel();
+
+                    // place the caret
+                    previousForm.focus();
+                    previousForm.setSelectionRange(newCaretIndex, newCaretIndex);
+                }
             }
         });
     },
     data: function () {
         return {
-            object: new Sentence()
+            object: new Sentence(),
+            comment: ''
         }
     },
     components: {

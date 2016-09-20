@@ -4,6 +4,26 @@ var MultiwordToken = require('../../scripts/MultiwordToken.js').MultiwordToken;
 module.exports = Ractive.extend({
     template: require('./multiwordtoken.html'),
     isolated: true,
+    onconstruct: function () {
+
+        /**
+         * nextLine is the div containing the next token line in the sentence.
+         */
+        Object.defineProperty(this, 'nextLine', {
+            get: function () {
+                return this.nodes.multiwordtoken.getElementsByClassName('subtoken')[0];
+            }
+        });
+
+        /**
+         * previousLine is the div containing the previous token line in the sentence
+         */
+        Object.defineProperty(this, 'previousLine', {
+            get: function () {
+                return this.nodes.multiwordtoken.previousElementSibling;
+            }
+        });
+    },
     oninit: function () {
         this.on('split', function (event) {
 
@@ -15,9 +35,8 @@ module.exports = Ractive.extend({
             this.parent.updateModel();
 
             // place the caret
-            var nextForm = event.node.parentNode.nextSibling.childNodes[2];
-            nextForm.focus();
-            nextForm.setSelectionRange(0,0);
+            this.nextLine.childNodes[2].focus();
+            this.nextLine.childNodes[2].setSelectionRange(0,0);
 
         });
 
@@ -69,7 +88,6 @@ module.exports = Ractive.extend({
         });
 
         this.on('downarrow', function (event){
-            console.log(event.node.parentNode.childNodes[20])
             var nextToken = event.node.parentNode.childNodes[20].childNodes[0].childNodes[2];
             nextToken.focus();
             nextToken.setSelectionRange(event.caretPosition, event.caretPosition);

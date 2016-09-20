@@ -1,9 +1,9 @@
-<span class="token">
+<span class="token subtoken" id="subtoken">
     <span class="id">{{object.id}}</span>
     <input class="form" value="{{object.form}}"
-           on-enter='split:{{object.id}},{{object.form}}'
-           on-forwarddel='merge:{{object.id}}'
-           on-backbackspace='backmerge:{{object.id}}'
+           on-enter='split'
+           on-forwarddel='merge'
+           on-backbackspace='backmerge'
            on-downarrow='downarrow'
            on-leftarrow='leftarrow'
            on-rightarrow='rightarrow'

@@ -4,7 +4,29 @@ var Token = require('../../scripts/Token.js').Token;
 module.exports = Ractive.extend({
     template: require('./subtoken.html'),
     isolated: true,
+    onconstruct: function () {
+        Object.defineProperty(this, 'nextLine', {
+            get: function () {
+                if ( this.nodes.subtoken.nextElementSibling !== null) {
+                    return this.nodes.subtoken.nextElementSibling
+                } else {
+                    return this.parent.nodes.multiwordtoken.nextElementSibling
+                }
+            }
+        });
+
+        Object.defineProperty(this, 'previousLine', {
+            get: function () {
+                if ( this.nodes.subtoken.previousElementSibling !== null) {
+                    return this.nodes.subtoken.previousElementSibling
+                } else {
+                    return this.parent.nodes.multiwordtoken
+                }
+            }
+        });
+    },
     oninit: function () {
+
         this.on('split', function (event) {
 
             // call split(token_id, index)
@@ -15,9 +37,8 @@ module.exports = Ractive.extend({
             this.parent.parent.updateModel();
 
             // place the caret
-            var nextForm = event.node.parentNode.nextSibling.childNodes[2];
-            nextForm.focus();
-            nextForm.setSelectionRange(0,0);
+            this.nextLine.childNodes[2].focus();
+            this.nextLine.childNodes[2].setSelectionRange(0,0);
         });
 
         this.on('merge', function (event) {
@@ -37,10 +58,10 @@ module.exports = Ractive.extend({
 
         this.on('backmerge', function (event) {
             if(event.caretPosition===0) {
-                // find the token before the current token
-                var previousToken = event.node.parentNode.previousSibling;
-                var previousForm = previousToken.childNodes[2].value;
-                var previousId = previousToken.childNodes[0].textContent;
+                // find the token id from before the current token
+                var previousId = this.previousLine.childNodes[0].textContent;
+                var previousForm = this.previousLine.childNodes[2];
+                var formLength = previousForm.value.length;
 
                 // if the id is a number, convert it to a number
                 if( !isNaN(+previousId )) {
@@ -55,8 +76,8 @@ module.exports = Ractive.extend({
                 this.parent.parent.updateModel();
 
                 // place the caret
-                previousToken.childNodes[2].focus();
-                previousToken.childNodes[2].setSelectionRange(previousForm.length,previousForm.length);
+                previousForm.focus();
+                previousForm.setSelectionRange(formLength,formLength);
             }
         });
 
@@ -67,20 +88,47 @@ module.exports = Ractive.extend({
         });
 
         this.on('downarrow', function (event){
-            var nextToken = event.node.parentNode.nextSibling.childNodes[2];
-            nextToken.focus();
-            nextToken.setSelectionRange(event.caretPosition, event.caretPosition);
+
+            var start = event.node.selectionStart;
+            var end = event.node.selectionEnd;
+
+            this.nextLine.childNodes[2].focus();
+            this.nextLine.childNodes[2].setSelectionRange(start, end);
         });
+
         this.on('leftarrow', function (event){
-            console.log("leftarrow function");
+            var start = event.node.selectionStart;
+            var end = event.node.selectionEnd;
+
+            // if we are at the start of the text area, move caret to the end of the previous form field
+            if(start === 0) {
+                var formLength = this.previousLine.childNodes[2].value.length;
+                this.previousLine.childNodes[2].focus();
+                this.previousLine.childNodes[2].setSelectionRange(formLength, formLength);
+            }
+            // otherwise, move the caret left by one
+            else {
+                event.node.setSelectionRange(start - 1, end - 1);
+            }
         });
+
         this.on('rightarrow', function (event){
-            console.log("rightarrow function");
+            // if we are at the end of the text area, move caret to the start of the next form field
+            if(event.node.selectionStart === event.node.value.length) {
+                this.nextLine.childNodes[2].focus();
+                this.nextLine.childNodes[2].setSelectionRange(0, 0);
+            }
+            // otherwise, move the caret right by one
+            else {
+                event.node.setSelectionRange(event.node.selectionStart + 1, event.node.selectionStart + 1);
+            }
         });
+
         this.on('uparrow', function (event){
-            var nextToken = event.node.parentNode.previousSibling.childNodes[2];
-            nextToken.focus();
-            nextToken.setSelectionRange(event.caretPosition, event.caretPosition);
+            var start = event.node.selectionStart;
+            var end = event.node.selectionEnd;
+            this.previousLine.childNodes[2].focus();
+            this.previousLine.childNodes[2].setSelectionRange(start, end);
         });
     },
     data: function () {
