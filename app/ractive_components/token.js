@@ -1,9 +1,36 @@
 var Ractive = require('ractive');
 var Token = require('../../scripts/Token.js').Token;
+var MultiwordToken = require('../../scripts/MultiwordToken.js').MultiwordToken;
 
 module.exports = Ractive.extend({
     template: require('./token.html'),
     isolated: true,
+    onconstruct: function () {
+
+        /**
+         * nextLine is the div containing the next token line in the sentence.
+         */
+        Object.defineProperty(this, 'nextLine', {
+            get: function () {
+                return this.nodes.token.nextElementSibling
+            }
+        });
+
+        /**
+         * previousLine is the div containing the previous token line in the sentence
+         */
+        Object.defineProperty(this, 'previousLine', {
+            get: function () {
+                if ( this.nodes.token.previousElementSibling.classList.contains("multiwordtoken")) {
+                    var mwt = this.nodes.token.previousElementSibling;
+                    var subtokens = mwt.getElementsByClassName('tokens')[0].children;
+                    return subtokens[subtokens.length - 1];
+                } else {
+                    return this.nodes.token.previousElementSibling
+                }
+            }
+        });
+    },
     oninit: function () {
         this.on('split', function (event) {
 
@@ -15,9 +42,8 @@ module.exports = Ractive.extend({
             this.parent.updateModel();
 
             // place the caret
-            var nextForm = event.node.parentNode.nextSibling.childNodes[2];
-            nextForm.focus();
-            nextForm.setSelectionRange(0,0);
+            this.nextLine.childNodes[2].focus();
+            this.nextLine.childNodes[2].setSelectionRange(0,0)
         });
 
         this.on('merge', function (event) {
@@ -38,9 +64,14 @@ module.exports = Ractive.extend({
         this.on('backmerge', function (event) {
             if(event.caretPosition===0) {
                 // find the token before the current token
+                var previousId = this.previousLine.childNodes[0].textContent;
+
+                // find the token line before this one
+                // note that we don't use this.prevousLine because we need to move cursor to mwt head
+                // also, we must do this here, before the merge instead of at the end where we use it
+                //   because if we do it before calling merge, it will break
                 var previousToken = event.node.parentNode.previousSibling;
                 var previousForm = previousToken.childNodes[2].value;
-                var previousId = previousToken.childNodes[0].textContent;
 
                 // if the id is a number, convert it to a number
                 if( !isNaN(+previousId )) {
@@ -61,25 +92,64 @@ module.exports = Ractive.extend({
         });
 
         this.on('expand', function (event) {
+
+            // index used for finding the replacement component
+            var index = this.parent.findAllComponents().indexOf(this);
+
+
             console.log('expand('+this.get('object').id+','+event.caretPosition+')');
             this.parent.get('object').expand(this.get('object').id,event.caretPosition);
+
             this.parent.updateModel();
+
+            var replacement = this.parent.findAllComponents()[index].nodes.multiwordtoken;
+            replacement.childNodes[2].focus();
+            replacement.childNodes[2].setSelectionRange(event.caretPosition,event.caretPosition);
+
         });
+
         this.on('downarrow', function (event){
-            var nextToken = event.node.parentNode.nextSibling.childNodes[2];
-            nextToken.focus();
-            nextToken.setSelectionRange(event.caretPosition, event.caretPosition);
+
+            var start = event.node.selectionStart;
+            var end = event.node.selectionEnd;
+
+            this.nextLine.childNodes[2].focus();
+            this.nextLine.childNodes[2].setSelectionRange(start, end);
         });
+
         this.on('leftarrow', function (event){
-            console.log("leftarrow function");
+            var start = event.node.selectionStart;
+            var end = event.node.selectionEnd;
+
+            // if we are at the start of the text area, move caret to the end of the previous form field
+            if(start === 0) {
+                var formLength = this.previousLine.childNodes[2].value.length;
+                this.previousLine.childNodes[2].focus();
+                this.previousLine.childNodes[2].setSelectionRange(formLength, formLength);
+            }
+            // otherwise, move the caret left by one
+            else {
+                event.node.setSelectionRange(start - 1, end - 1);
+            }
         });
+
         this.on('rightarrow', function (event){
-            console.log("rightarrow function");
+            // if we are at the end of the text area, move caret to the start of the next form field
+            if(event.node.selectionStart === event.node.value.length) {
+                this.nextLine.childNodes[2].focus();
+                this.nextLine.childNodes[2].setSelectionRange(0, 0);
+            }
+            // otherwise, move the caret right by one
+            else {
+                event.node.setSelectionRange(event.node.selectionStart + 1, event.node.selectionStart + 1);
+            }
         });
+
         this.on('uparrow', function (event){
-            var nextToken = event.node.parentNode.previousSibling.childNodes[2];
-            nextToken.focus();
-            nextToken.setSelectionRange(event.caretPosition, event.caretPosition);
+            var start = event.node.selectionStart;
+            var end = event.node.selectionEnd;
+            this.previousLine.childNodes[2].focus();
+            this.previousLine.childNodes[2].setSelectionRange(start, end);
         });
 
         this.on('splitsentence', function (event) {
@@ -99,7 +169,15 @@ module.exports = Ractive.extend({
 
             this.parent.parent.updateModel();
 
-            // TODO: place caret
+            // find the new sentence component
+            var replacement = this.parent.parent.findAllComponents('sentence')[sent_index+1];
+            // find the first token component in that new sentence
+            replacement = replacement.findAllComponents('token')[0];
+            // find that token's div
+            replacement = replacement.nodes.token;
+
+            replacement.childNodes[2].focus();
+            replacement.childNodes[2].setSelectionRange(event.caretPosition,event.caretPosition);
         });
 
         this.on('mergesentence', function () {
@@ -120,12 +198,29 @@ module.exports = Ractive.extend({
             var con = this.parent.parent.get('object');
             var sent_index = con.sentences.indexOf(sent);
             var token_index = sent.tokens.indexOf(this.get('object'));
+
+
+            // Find new caret position
+            // This needs to be done before updating the model because we wish to use the length of the sentence prior
+            // to modification.
+            //
+            // find the new sentence component
+            var nextCaretLocation = this.parent.parent.findAllComponents('sentence')[sent_index-1];
+            // find the first token component in that new sentence
+            nextCaretLocation = nextCaretLocation.findAllComponents('token');
+            nextCaretLocation = nextCaretLocation[nextCaretLocation.length -1]
+            // find that token's div
+            nextCaretLocation = nextCaretLocation.nodes.token;
+
             if(token_index === 0) {
                 console.log('mergeSentence('+(sent_index-1)+')');
                 con.mergeSentence(sent_index-1);
 
                 this.parent.parent.updateModel();
             }
+
+            nextCaretLocation.childNodes[2].focus();
+            nextCaretLocation.childNodes[2].setSelectionRange(event.caretPosition,event.caretPosition);
 
         });
     },

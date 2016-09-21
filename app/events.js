@@ -313,7 +313,7 @@
         var leftarrowHandler = function (event) {
             // If we are currently in a text box and have hit the left arrow
             if (document.activeElement.type === 'text'
-                && event.key === 'LeftDown') {
+                && event.key === 'ArrowLeft') {
                 event.preventDefault();
                 fire(textFire(node, event));
             }
@@ -332,7 +332,7 @@
         var rightarrowHandler = function (event) {
             // If we are currently in a text box and have hit the right arrow
             if (document.activeElement.type === 'text'
-                && event.key === 'RightDown') {
+                && event.key === 'ArrowRight') {
                 event.preventDefault();
                 fire(textFire(node, event));
             }
