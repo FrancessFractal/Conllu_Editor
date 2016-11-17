@@ -16,7 +16,7 @@ module.exports = Ractive.extend({
     },
     oninit: function () {
         this.on('tokenize', function (event, text) {
-            var tokenizer = new Tokenizer('text');
+            var tokenizer = new Tokenizer('');
             tokenizer.setEntry(text);
             var textSentences = tokenizer.getSentences();
             var conllu = new Conllu();
