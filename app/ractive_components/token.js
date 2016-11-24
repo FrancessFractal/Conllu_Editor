@@ -1,6 +1,6 @@
 var Ractive = require('ractive');
-var Token = require('../../scripts/Token.js').Token;
-var MultiwordToken = require('../../scripts/MultiwordToken.js').MultiwordToken;
+var Token = require('conllu').Token;
+var MultiwordToken = require('conllu').MultiwordToken;
 
 module.exports = Ractive.extend({
     template: require('./token.html'),

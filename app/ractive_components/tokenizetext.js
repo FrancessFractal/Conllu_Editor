@@ -1,7 +1,7 @@
 var Ractive = require('ractive');
-var Conllu = require('../../scripts/Conllu.js').Conllu;
-var Sentence = require('../../scripts/Sentence.js').Sentence;
-var Token = require('../../scripts/Token.js').Token;
+var Conllu = require('conllu').Conllu;
+var Sentence = require('conllu').Sentence;
+var Token = require('conllu').Token;
 var Tokenizer = require('sentence-tokenizer');
 
 module.exports = Ractive.extend({

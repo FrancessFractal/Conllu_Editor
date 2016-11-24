@@ -1,5 +1,5 @@
 var Ractive = require('ractive');
-var Token = require('../../scripts/Token.js').Token;
+var Token = require('conllu').Token;
 
 module.exports = Ractive.extend({
     template: require('./subtoken.html'),

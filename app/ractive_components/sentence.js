@@ -1,5 +1,5 @@
 var Ractive = require('ractive');
-var Sentence = require('../../scripts/Sentence.js').Sentence;
+var Sentence = require('conllu').Sentence;
 
 module.exports = Ractive.extend({
     template: require('./sentence.html'),

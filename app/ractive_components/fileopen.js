@@ -1,5 +1,5 @@
 var Ractive = require('ractive');
-var Conllu = require('../../scripts/Conllu.js').Conllu;
+var Conllu = require('conllu').Conllu;
 
 module.exports = Ractive.extend({
     template: require('./fileopen.html'),

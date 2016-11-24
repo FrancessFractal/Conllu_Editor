@@ -1,0 +1,29 @@
+{
+  "name": "conllu_editor",
+  "version": "0.1.0",
+  "description": "",
+  "main": "app/index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FrancessFractal/Conllu_Editor.git"
+  },
+  "author": "",
+  "license": "",
+  "bugs": {
+    "url": "https://github.com/FrancessFractal/Conllu_Editor/issues"
+  },
+  "homepage": "https://github.com/FrancessFractal/Conllu_Editor#readme",
+  "dependencies": {
+    "browserify": "^13.1.1",
+    "ractivate": "^0.2.0",
+    "ractive": "^0.7.3",
+    "sentence-tokenizer": "0.0.7",
+    "conllu": "0.1.0"
+  }
+}
