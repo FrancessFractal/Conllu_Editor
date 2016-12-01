@@ -5,6 +5,7 @@ module.exports = Ractive.extend({
     components: {
         conllu: require('./conllu.js'),
         fileopen: require('./fileopen.js'),
-        tokenizetext: require('./tokenizetext.js')
+        tokenizetext: require('./tokenizetext.js'),
+        uploadtext: require('./uploadtext.js')
     }
 });
